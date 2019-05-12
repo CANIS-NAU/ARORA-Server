@@ -1,7 +1,3 @@
----
-
-
----
 
 <h1 id="welcome-to-arora-server">Welcome to ARORA Server</h1>
 <p>This is a server project based on <a href="%5Bhttps://www.django-rest-framework.org/%5D(https://www.django-rest-framework.org/)"><strong>Django REST Framework</strong></a>.</p>
