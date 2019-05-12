@@ -1,8 +1,9 @@
----
-
-
----
-
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>README.MD</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
 <h1 id="welcome-to-arora-server">Welcome to ARORA Server</h1>
 <p>This is a server project based on <a href="%5Bhttps://www.django-rest-framework.org/%5D(https://www.django-rest-framework.org/)"><strong>Django REST Framework</strong></a>.</p>
 <h1 id="package-dependency">Package Dependency</h1>
