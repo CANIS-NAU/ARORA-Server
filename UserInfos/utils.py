@@ -5,7 +5,7 @@ from .models import UserInfo
 def jwt_response_payload_handler(token, user=UserInfo, request=None):
     return {
         'token': token,
-        'user_id': user.UserId
+        'user_id': user.user_id
     }
 
 
