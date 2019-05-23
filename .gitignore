@@ -1,0 +1,8 @@
+# Do not include virtual environment
+aroraenv
+
+# Do not include compiled code or binaries
+*.pyc
+
+# Do not include migrations
+*/migrations/*
