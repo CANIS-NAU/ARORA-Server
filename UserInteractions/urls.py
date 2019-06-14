@@ -10,4 +10,9 @@ urlpatterns = [
     path('userinteractiontype/<int:user_interaction_type_id>', views.UserInteractionTypeEndPoint.as_view()),
     path('userinteractiontype', views.UserInteractionTypeEndPoint.as_view()),
     path('userinteractiontypes', views.UserInteractionTypesEndPoint.as_view()),
-]
+
+    # Paths for getting UserInteraction records by sender or by receiver
+    path('userinteractiontype/<int:quest_record_id>', views.UserInteractionsEndPointByQuestReportId.as_view()),
+    path('userinteractiontype/<int:initiator_user_id>',views.UserInteractionsEndPointByInitiator.as_view()),
+    path('userinteractiontype/<int:receiver_user_id>', views.UserInteractionsEndPointByReceiver.as_view()),
+]    

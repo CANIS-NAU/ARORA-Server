@@ -128,3 +128,34 @@ class UserInteractionsEndPoint(APIView):
             return Response(serializer.data)
         except UserInteraction.DoesNotExist:
             return Response({"error": "UserInteraction does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+class UserInteractionsEndPointByInitiator(APIView):
+
+    def get(self, request, initiator_user_id):
+        try:
+            queryset = UserInteraction.objects.get(initiator_user_id=initiator_user_id)
+            serializer = UserInteractionSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except UserInteraction.DoesNotExist:
+            return Response({"error": "UserInteractions initiated by this user do not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+class UserInteractionsEndPointByReceiver(APIView):
+
+    def get(self, request, receiver_user_id):
+        try:
+            queryset = UserInteraction.objects.get(receiver_user_id=receiver_user_id)
+            serializer = UserInteractionSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except UserInteraction.DoesNotExist:
+            return Response({"error": "UserInteractions received by this user do not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+class UserInteractionsEndPointByQuestReportId(APIView):
+
+    def get(self, request, quest_report_id):
+        try:
+            queryset = UserInteraction.objects.get(quest_report_id=quest_report_id)
+            serializer = UserInteractionSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except UserInteraction.DoesNotExist:
+            return Response({"error": "This QuestReport does not have any associated UserInteractions"}, status=status.HTTP_404_NOT_FOUND)
+        
