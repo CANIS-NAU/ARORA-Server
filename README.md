@@ -186,6 +186,7 @@
 |–&gt; receiver_user_id* <em>(integer)</em><br>
 |–&gt; user_interaction_type_id* <em>(integer)</em><br>
 |–&gt; user_interaction_content* <em>(string)</em></p>
+|-&gt; quest_report_id* <em>(integer)</em></p>
 </li>
 </ol>
 <p><strong>Note:</strong></p>
