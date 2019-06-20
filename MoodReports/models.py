@@ -19,11 +19,11 @@ class MoodReport(models.Model):
     # Foreign Key, UserInfo:UserId -> MoodReport:UserId
     user_id = models.ForeignKey(UserInfo, on_delete=models.CASCADE, db_column='UserId')
 
-    mood_type = models.IntegerField(db_column='MoodType')  # Not use foreign key here. For all reports in database
-    user_text = models.TextField(db_column='UserText')
+    # Q1
+    q1_response = models.IntegerField(db_column="Q1MoodResponse", default=1)
 
-    def __str__(self):
-        return self.user_text
+    # Q2
+    q2_response = models.IntegerField(db_column="Q2MoodResponse", default=2)
 
     def __int__(self):
         return self.mood_report_id
