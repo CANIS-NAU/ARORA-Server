@@ -35,8 +35,12 @@ class Quest(models.Model):
 class QuestReport(models.Model):
     quest_report_id = models.AutoField(primary_key=True, db_column='QuestReportId')  # Primary Key
 
-    # Foreign Key, Quest:QuestId -> QuestReport:QuestId
-    quest_id = models.ForeignKey(Quest, on_delete=models.CASCADE, db_column='QuestId')
+    # Foreign Key, QuestType:QuestTypeId -> QuestReport:QuestId
+    quest_type_id = models.ForeignKey(QuestType, on_delete=models.CASCADE, db_column='QuestTypeId', default=1)
+
+    # Foreign Key, QuestStatus:QuestStatusId -> QuestReport:QuestId
+    quest_status_id = models.ForeignKey(QuestStatus, on_delete=models.CASCADE, db_column='QuestStatusId', default=1)
+
 
     # Foreign Key, UserInfo:UserId -> QuestReport:UserId
     user_id = models.ForeignKey(UserInfo, on_delete=models.CASCADE, db_column='UserId')
