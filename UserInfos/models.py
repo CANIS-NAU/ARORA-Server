@@ -11,6 +11,7 @@ class UserInfo(AbstractUser):
                                                      db_column='UserCurrentMoodUpdated')
     user_created_at = models.DateTimeField(auto_now_add=True, editable=False, db_column='UserCreatedAt')
     user_name = models.TextField(default='', db_column='UserName')
+    user_name_of_strength = models.TextField(default='', db_column='UserNameOfStrength')
     user_current_mood = models.IntegerField(default=0, db_column='UserCurrentMood')
     user_id = models.IntegerField(default=2147483648, unique=False, editable=False, db_column='UserId')
     user_current_location_lat = models.DecimalField(max_digits=5, decimal_places=2, default=0.0,
@@ -23,7 +24,7 @@ class UserInfo(AbstractUser):
     user_pollen = models.IntegerField(default=0, db_column='UserPollen')
 
     email = models.EmailField(unique=True)
-    REQUIRED_FIELDS = ['email', 'user_name']
+    REQUIRED_FIELDS = ['email']#, 'user_name']
 
     def __str__(self):
         return self.username

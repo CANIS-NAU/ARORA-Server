@@ -5,14 +5,15 @@ from . import models
 
 class UserInfoSerializer(serializers.ModelSerializer):
 
-    user_name = serializers.CharField(source='username', max_length=50)
+    #user_name = serializers.CharField(source='username', max_length=50)
 
     class Meta:
         fields = (
             'user_info_id',
             'user_current_mood_updated',
             'user_created_at',
-            'user_name',
+            #'user_name',
+            'user_name_of_strength',
             'user_current_mood',
             'user_id',
             'user_current_location_lat',
