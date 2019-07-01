@@ -29,5 +29,5 @@ class DailyTask(models.Model):
     daily_task_m3_required = models.IntegerField(default=1, db_column='DailyTaskM3Required')
     daily_task_m3_achieved = models.IntegerField(default=0, db_column='DailyTaskM3Achieved')
 
-    def __str__(self):
+    def __int__(self):
         return self.daily_task_id
