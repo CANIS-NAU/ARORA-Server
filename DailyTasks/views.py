@@ -74,7 +74,7 @@ class DailyTasksEndPoint(APIView):
         except DailyTask.DoesNotExist:
             return Response({"error": "DailyTask does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-class UserInteractionsEndPointByUserId(APIView):
+class DailyTaskEndPointByUserId(APIView):
 
     def get(self, request, daily_task_user_id):
         try:
