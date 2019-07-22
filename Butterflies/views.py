@@ -81,9 +81,9 @@ class UserButterflyEndPoint(APIView):
 
 class UserButterfliesEndPoint(APIView):
 
-    def get(self, request):
+    def get(self, request, user_id):
         try:
-            queryset = UserButterfly.objects.all()
+            queryset = UserButterfly.objects.get(user_id=user_id)
             serializer = UserButterflySerializer(queryset, many=True)
             return Response(serializer.data)
         except UserButterfly.DoesNotExist:
