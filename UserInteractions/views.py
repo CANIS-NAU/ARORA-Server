@@ -118,6 +118,13 @@ class UserInteractionEndPoint(APIView):
                             status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+    # TODO add delete
+    def delete(self, request, user_interaction_id):
+            delete_user_interaction = UserInteraction.objects.get(user_interaction_id=user_interaction_id)
+            if delete_user_interaction.UserId.UserId != request.user.UserId:
+                return Response({"error": "Permission denied"}, status=status.HTTP_401_UNAUTHORIZED)
+            delete_user_interaction.delete()
+            return Response({}, status=status.HTTP_200_OK)
 
 class UserInteractionsEndPoint(APIView):
 
