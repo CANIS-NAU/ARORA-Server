@@ -16,6 +16,12 @@ class ButterflySerializer(serializers.ModelSerializer):
         model = models.Butterfly
 
 
+class SuperflySerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = models.Superfly
+
+
 class UserButterflySerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'

@@ -15,6 +15,8 @@ class ButterflyAtrium(models.Model):
     color_three_count = models.IntegerField(db_column="ColorThreeCount", default=0)
     color_four_count = models.IntegerField(db_column="ColorFourCount", default=0)
 
+    superflies_count = models.IntegerField(db_column="SuperfliesCount", default=0)
+
     def __int__(self):
         return self.butterfly_atrium_id
 

@@ -87,7 +87,7 @@ class UserButterfliesEndPoint(APIView):
             serializer = UserButterflySerializer(queryset, many=True)
             return Response(serializer.data)
         except UserButterfly.DoesNotExist:
-            return Response({"error": "User_butterfly does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "All User_butterfly do not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 
 '''Butterfly Type End Point starts here'''
@@ -207,6 +207,74 @@ class ButterfliesEndPoint(APIView):
 
 '''Butterfly End Point ends here'''
 
+'''Superfly End Point starts here'''
+class SuperflyEndPoint(APIView):
+
+    def get(self, request, superfly_id):
+        try:
+            query = Superfly.objects.get(superfly_id=superfly_id)
+            serializer = SuperflySerializer(query)
+            return Response(serializer.data)
+        except Superfly.DoesNotExist:
+            return Response({"error": "Superfly does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request):
+        serializer = SuperflySerializer(data=request.data)
+        print(serializer)
+        if serializer.is_valid():
+            new_superfly = serializer.save()
+            return Response({"butterfly_id": new_superfly.superfly_id}, status=status.HTTP_200_OK)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, superfly_id):
+        try:
+            updated_superfly = Superfly.objects.get(superfly_id=superfly_id)
+        except Superfly.DoesNotExist:
+            return Response({"error": "Superfly does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = SuperflySerializer(updated_superfly, data=request.data)
+        if serializer.is_valid():
+            updated_superfly = serializer.save()
+            return Response({"superfly_id": updated_superfly.butterfly_id}, status=status.HTTP_200_OK)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, superfly_id):
+        try:
+            updated_superfly = Superfly.objects.get(superfly_id=superfly_id)
+        except Superfly.DoesNotExist:
+            return Response({"error": "Superfly does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = SuperflySerializer(updated_superfly, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_superfly = serializer.save()
+            return Response({"superfly_id": updated_superfly.butterfly_id}, status=status.HTTP_200_OK)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SuperfliesEndPoint(APIView):
+
+    def get(self, request):
+        try:
+            queryset = Superfly.objects.all()
+            serializer = SuperflySerializer(queryset, many=True)
+            return Response(serializer.data)
+        except Superfly.DoesNotExist:
+            return Response({"error": "Superfly does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class SuperfliesEndPointByButterflyAtriumId(APIView):
+
+    def get(self, request, butterfly_atrium_id):
+        try:
+            queryset = Superfly.objects.filter(butterfly_atrium_id=butterfly_atrium_id)
+            serializer = SuperflySerializer(queryset, many=True)
+            return Response(serializer.data)
+        except Superfly.DoesNotExist:
+            return Response({"error": "Superfly does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
+'''Superfly End Point ends here'''
+
 
 class ButterflyLikeEndPoint(APIView):
 
@@ -258,7 +326,7 @@ class ButterflyLikesEndPoint(APIView):
             serializer = ButterflyLikeSerializer(queryset, many=True)
             return Response(serializer.data)
         except ButterflyLike.DoesNotExist:
-            return Response({"error": "Butterfly_like does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "All Butterfly_like do not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ButterflyCommentEndPoint(APIView):
@@ -314,4 +382,4 @@ class ButterflyCommentsEndPoint(APIView):
             serializer = ButterflyCommentSerializer(queryset, many=True)
             return Response(serializer.data)
         except ButterflyComment.DoesNotExist:
-            return Response({"error": "Butterfly_comment does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "All Butterfly_comment do not exist"}, status=status.HTTP_404_NOT_FOUND)
