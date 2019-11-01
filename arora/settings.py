@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'BaselineReports',
     'Butterflies',
+    'ButterflyAtriums',
     'DailyTasks',
     'LocationReports',
     'MoodReports',

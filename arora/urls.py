@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('MoodReports.urls')),
   #  path('', include('DailyTasks.urls')),
     path('', include('Notifications.urls')),
+    path('', include('ButterflyAtriums.urls')),
     path('', include('Butterflies.urls')),
     path('', include('Phrases.urls')),
     path('', include('BaselineReports.urls')),
