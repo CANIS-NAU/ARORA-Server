@@ -140,7 +140,7 @@ class UserInteractionsEndPointByInitiator(APIView):
 
     def get(self, request, initiator_user_id):
         try:
-            queryset = UserInteraction.objects.get(initiator_user_id=initiator_user_id)
+            queryset = UserInteraction.objects.filter(initiator_user_id=initiator_user_id)
             serializer = UserInteractionSerializer(queryset, many=True)
             return Response(serializer.data)
         except UserInteraction.DoesNotExist:
@@ -150,7 +150,7 @@ class UserInteractionsEndPointByReceiver(APIView):
 
     def get(self, request, receiver_user_id):
         try:
-            queryset = UserInteraction.objects.get(receiver_user_id=receiver_user_id)
+            queryset = UserInteraction.objects.filter(receiver_user_id=receiver_user_id)
             serializer = UserInteractionSerializer(queryset, many=True)
             return Response(serializer.data)
         except UserInteraction.DoesNotExist:
@@ -160,7 +160,7 @@ class UserInteractionsEndPointByQuestReportId(APIView):
 
     def get(self, request, quest_report_id):
         try:
-            queryset = UserInteraction.objects.get(quest_report_id=quest_report_id)
+            queryset = UserInteraction.objects.filter(quest_report_id=quest_report_id)
             serializer = UserInteractionSerializer(queryset, many=True)
             return Response(serializer.data)
         except UserInteraction.DoesNotExist:

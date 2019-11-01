@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'Quests',
     'SystemReports',
     'UserInteractions',
+    'Notifications',
     'UserInfos'
 ]
 
