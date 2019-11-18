@@ -88,6 +88,9 @@ class UserInteractionEndPoint(APIView):
         serializer = UserInteractionSerializer(data=request.data)
         if serializer.is_valid():
             new_quest = serializer.save()
+            # Who needs to know about which user interactions?
+            # Liking and comments should just between receiver and initiator
+            # TODO make a notification that corresponds 
             return Response({"user_interaction_id": new_quest.user_interaction_id},
                             status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -126,6 +129,7 @@ class UserInteractionEndPoint(APIView):
             delete_user_interaction.delete()
             return Response({}, status=status.HTTP_200_OK)
 
+
 class UserInteractionsEndPoint(APIView):
 
     def get(self, request):
@@ -148,7 +152,7 @@ class UserInteractionsEndPointByInitiator(APIView):
 
 class UserInteractionsEndPointByReceiver(APIView):
 
-    def get(self, request, receiver_user_id):
+    def get(self, request, receiver_user_id, broadcast_user_id):
         try:
             queryset = UserInteraction.objects.filter(receiver_user_id=receiver_user_id)
             serializer = UserInteractionSerializer(queryset, many=True)
@@ -166,3 +170,4 @@ class UserInteractionsEndPointByQuestReportId(APIView):
         except UserInteraction.DoesNotExist:
             return Response({"error": "This QuestReport does not have any associated UserInteractions"}, status=status.HTTP_404_NOT_FOUND)
         
+# TODO: Multiuser interaction where there is one initiator to many receivers (up to 6)

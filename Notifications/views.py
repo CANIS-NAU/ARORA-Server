@@ -7,6 +7,15 @@ from .models import Notification
 from .serializers import NotificationSerializer
 
 
+# Notification Types
+# --0: likes
+# --1: comments
+# --2: quest report
+# --3: invitation
+# --4: alert to do tasks
+
+#TODO Create endpoint for NotificationType
+
 class NotificationList(generics.ListAPIView):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
@@ -61,15 +70,20 @@ class NotificationsEndPoint(APIView):
 
     def get(self, request, notification_user_id):
         try:
+            # Likes, comments, invitations
             queryset = Notification.objects.all().exclude(notification_user_id=notification_user_id)
+            # TODO Get a second queryset that has all the quest reports that are complete
+            # notifications about QuestReports (M1-M3)
             serializer = NotificationSerializer(queryset, many=True)
             return Response(serializer.data)
         except Notification.DoesNotExist:
             return Response({"error": "Notification does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-
 class NotificationsEndPointByNotificationType(APIView):
-
+    # Types
+    # --
+    # --
+    # --
     def get(self, request, notification_user_id, notification_type_id):
         try:
             queryset = Notification.objects.filter(notification_type_id=notification_type_id).exclude(notification_user_id=notification_user_id)
@@ -77,3 +91,5 @@ class NotificationsEndPointByNotificationType(APIView):
             return Response(serializer.data)
         except Notification.DoesNotExist:
             return Response({"error": "Notifications of this type do not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
