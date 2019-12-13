@@ -71,8 +71,7 @@ class NotificationsEndPoint(APIView):
     def get(self, request, notification_user_id):
         try:
             # Likes, comments, invitations
-            user_notification_recipients = request.GET.getlist('receiver_user_id__in')
-            queryset = Notification.objects.all().exclude(notification_user_id=user_notification_recipients)
+            queryset = Notification.objects.all().exclude(notification_user_id=notification_user_id)
             # TODO Get a second queryset that has all the quest reports that are complete
             # notifications about QuestReports (M1-M3)
             serializer = NotificationSerializer(queryset, many=True)

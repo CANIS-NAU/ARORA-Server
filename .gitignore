@@ -3,6 +3,8 @@ aroraenv
 
 # Do not include compiled code or binaries
 *.pyc
+*/*.pyc
+*/*/*/*.pyc
 
 # Do not include migrations
 */migrations/*

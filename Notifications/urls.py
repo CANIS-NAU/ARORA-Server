@@ -12,5 +12,4 @@ urlpatterns = [
     path('notificationtype/<int:notification_type_id>', views.NotificationTypeEndPoint.as_view()),
     path('notificationtype', views.NotificationTypeEndPoint.as_view()),
     path('notificationtypes', views.NotificationTypesEndPoint.as_view()),
-
-]
+    ]
