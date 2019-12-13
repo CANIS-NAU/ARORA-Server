@@ -1,12 +1,12 @@
 from django.db import models
 from UserInfos.models import UserInfo
-
-
+from Quests.models import QuestReport
+from ButterflyAtriums.models import ButterflyAtrium
 # Create your models here.
 
 
 class ButterflyType(models.Model):
-    butterfly_type_id = models.AutoField(primary_key=True, db_column='ButterflyTypeId')  # Primary Key
+    butterfly_type_id = models.AutoField(primary_key=True, default=1, db_column='ButterflyTypeId')  # Primary Key
     butterfly_type_description = models.IntegerField(db_column='ButterflyTypeDescription')
     butterfly_type_image = models.TextField(db_column='ButterflyTypeImage')
 
@@ -25,6 +25,14 @@ class Butterfly(models.Model):
     def __int__(self):
         return self.butterfly_id
 
+class Superfly(models.Model):
+    superfly_id = models.AutoField(primary_key=True, db_column='SuperflyId') # Primary Key
+
+    # Foreign Key, ButterflyAtrium:ButterflyAtriumTypeId -> Superfly:ButterflyAtriumId
+    butterfly_atrium_id = models.ForeignKey(ButterflyAtrium, on_delete=models.CASCADE, db_column="ButterflyAtriumId")
+
+    # Foreign Key, ButterflyType:ButterflyTypeId -> Superfly:ButterflyTypeId
+    butterfly_type_id = models.ForeignKey(ButterflyType, on_delete=models.CASCADE, db_column='ButterflyTypeId')
 
 class UserButterfly(models.Model):
     user_butterfly_id = models.AutoField(primary_key=True, db_column='UserButterflyId')  # Primary Key
@@ -45,10 +53,14 @@ class ButterflyLike(models.Model):
     butterfly_like_id = models.AutoField(primary_key=True, db_column='ButterflyLikeId')  # Primary Key
 
     # Foreign Key, Butterfly:ButterflyId -> ButterflyLike:ButterflyId
-    butterfly_id = models.ForeignKey(Butterfly, on_delete=models.CASCADE, db_column='ButterflyId')
+    # butterfly_id = models.ForeignKey(Butterfly, on_delete=models.CASCADE, db_column='ButterflyId')
 
     # Foreign Key, UserInfo:UserId -> ButterflyLike:UserId
     user_id = models.ForeignKey(UserInfo, on_delete=models.CASCADE, db_column='UserId')
+
+    # Foreign Key, QusetReport:QuestReportId -> ButterflyLike:QusetReportId
+    quest_report_id = models.ForeignKey(QuestReport, on_delete=models.CASCADE, db_column='QuestReportId', null=True)
+    
 
     like_created_at = models.DateTimeField(auto_now_add=True, db_column='LikeCreatedAt')
 

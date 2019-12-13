@@ -15,4 +15,5 @@ urlpatterns = [
     path('userinteraction/<int:quest_record_id>', views.UserInteractionsEndPointByQuestReportId.as_view()),
     path('userinteraction/<int:initiator_user_id>',views.UserInteractionsEndPointByInitiator.as_view()),
     path('userinteraction/<int:receiver_user_id>', views.UserInteractionsEndPointByReceiver.as_view()),
+
 ]    
