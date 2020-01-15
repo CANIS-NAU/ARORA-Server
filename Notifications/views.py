@@ -7,7 +7,7 @@ from .models import *
 from .serializers import *
 
 
-# Notification Types (object list id's start at 1)
+# Notification Types (object list ids start at 1)
 # --1: Likes
 # --2: Comments
 # --3: Quest Report
@@ -67,15 +67,70 @@ class NotificationEndPoint(APIView):
 
 
 class NotificationsEndPoint(APIView):
-
-    def get(self, request, notification_user_id):
+    def post(self, request):
         try:
-            # Likes, comments, invitations
-            queryset = Notification.objects.all().exclude(notification_user_id=notification_user_id)
+            # Likes, comments, invitations; (excludes QuestReports[id 3] only)
+            queryset = Notification.objects.all().exclude(notification_type_id=3)
             # TODO Get a second queryset that has all the quest reports that are complete
             # notifications about QuestReports (M1-M3)
             serializer = NotificationSerializer(queryset, many=True)
             return Response(serializer.data)
+        except Notification.DoesNotExist:
+            return Response({"error": "Notification does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request):
+        try:
+            # Likes, comments, invitations; (excludes QuestReports[id 3] only)
+            queryset = Notification.objects.all().exclude(notification_user_id=3)
+            # TODO Get a second queryset that has all the quest reports that are complete
+            # notifications about QuestReports (M1-M3)
+
+            with open("debug.txt", "a") as fo:
+                fo.write("%s\n" % queryset)
+
+            serializer = NotificationSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except Notification.DoesNotExist:
+            return Response({"error": "Notification does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+class NotificationsEndPointByUserId(APIView):
+    def post(self, request, notification_user_id):
+        try:
+
+            # Filter the query set by the URL parameters
+            queryset_user_id=list(Notification.objects.all().filter(notification_user_id=notification_user_id))
+            queryset_user_public=list(Notification.objects.all().filter(notification_user_id=7))
+
+            # Merge queryset
+            queryset=queryset_user_id + queryset_user_public
+            with open("debug.txt", "a") as fo:
+                fo.write("%s\n" % queryset)
+
+            # Serialize and return as formatted RESPONSE
+            serializer=NotificationSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Notification.DoesNotExist:
+            return Response({"error": "Notification does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, notification_user_id):
+        try:
+
+            # Filter the query set by the URL parameters
+            queryset_user_id=list(Notification.objects.all().filter(notification_user_id=notification_user_id))
+            queryset_user_public=list(Notification.objects.all().filter(notification_user_id=7))
+
+            # Merge queryset
+            queryset=queryset_user_id + queryset_user_public
+            #QuerySet(queryset)
+            print(queryset)
+            with open("debug.txt", "a") as fo:
+                fo.write("%s\n" % queryset)
+
+            # Serialize and return as formatted RESPONSE
+            serializer=NotificationSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         except Notification.DoesNotExist:
             return Response({"error": "Notification does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -140,10 +195,21 @@ class NotificationsEndPointByNotificationType(APIView):
     # --
     # --
     # --
-    def get(self, request, notification_user_id, notification_type_id):
+    def get(self, request):
         try:
-            queryset = Notification.objects.filter(notification_type_id=notification_type_id).exclude(notification_user_id=notification_user_id)
-            serializer = NotificationSerializer(queryset, many=True)
+            # Get all of the notifications
+            queryset = Notification.objects.all()
+
+            # Get the specific parameters from the URL
+            notification_type_id=self.request.query_params.get('notification_type_id')
+            notification_user_id=self.request.query_params.get('notification_user_id')
+
+            # Filter the query set by the URL parameters
+            queryset=queryset.filter(notification_user_id=notification_user_id)
+            queryset=queryset.filter(notification_type_id=notification_type_id)
+
+            # Serialize and return as formatted RESPONSE
+            serializer=NotificationSerializer(queryset, many=True)
             return Response(serializer.data)
         except Notification.DoesNotExist:
             return Response({"error": "Notifications of this type do not exist"}, status=status.HTTP_404_NOT_FOUND)
