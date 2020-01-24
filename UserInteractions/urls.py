@@ -13,7 +13,8 @@ urlpatterns = [
 
     # Paths for getting UserInteraction records by sender or by receiver
     path('userinteraction/<int:quest_record_id>', views.UserInteractionsEndPointByQuestReportId.as_view()),
-    path('userinteraction/<int:initiator_user_id>',views.UserInteractionsEndPointByInitiator.as_view()),
+    path('userinteraction/<int:initiator_user_id>', views.UserInteractionsEndPointByInitiator.as_view()),
+    path('userinteractions/<int:initiator_user_id>', views.UserInteractionsEndPointByInitiatorAndNotifType.as_view()),
     path('userinteraction/<int:receiver_user_id>', views.UserInteractionsEndPointByReceiver.as_view()),
 
 ]    

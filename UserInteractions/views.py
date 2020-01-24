@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from .models import *
 from UserInfos.models import UserInfo
+from Notifications.models import Notification
 from .serializers import *
 
 
@@ -145,6 +146,18 @@ class UserInteractionsEndPointByInitiator(APIView):
     def get(self, request, initiator_user_id):
         try:
             queryset = UserInteraction.objects.filter(initiator_user_id=initiator_user_id)
+            serializer = UserInteractionSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except UserInteraction.DoesNotExist:
+            return Response({"error": "UserInteractions initiated by this user do not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+class UserInteractionsEndPointByInitiatorAndNotifType(APIView):
+
+    def get(self, request, initiator_user_id):
+        try:
+            queryset = UserInteraction.objects.filter(initiator_user_id=initiator_user_id)
+            #Notifications are UserInteractionType 1. 
+            queryset = queryset.filter(user_interaction_type_id=1)#Need to add a filter to get likes
             serializer = UserInteractionSerializer(queryset, many=True)
             return Response(serializer.data)
         except UserInteraction.DoesNotExist:
