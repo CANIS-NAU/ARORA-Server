@@ -165,9 +165,22 @@ class UserInteractionsEndPointByInitiatorAndNotifType(APIView):
 
 class UserInteractionsEndPointByReceiver(APIView):
 
-    def get(self, request, receiver_user_id, broadcast_user_id):
+    def get(self, request, receiver_user_id):
         try:
             queryset = UserInteraction.objects.filter(receiver_user_id=receiver_user_id)
+            serializer = UserInteractionSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except UserInteraction.DoesNotExist:
+            return Response({"error": "UserInteractions received by this user do not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+class UserInteractionsEndPointByReceiverAndNotifType(APIView):
+
+    def get(self, request, receiver_user_id):
+        try:
+			#Reduce to notifications [user and global(id = 7)]
+            queryset = UserInteraction.objects.filter(Q(receiver_user_id=receiver_user_id)
+                                                     |Q(receiver_user_id=receiver_user_id)
+                                                     &Q(user_interaction_type_id = 1))
             serializer = UserInteractionSerializer(queryset, many=True)
             return Response(serializer.data)
         except UserInteraction.DoesNotExist:

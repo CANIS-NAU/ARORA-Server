@@ -1,6 +1,7 @@
 from django.db import models
 from UserInfos.models import UserInfo
 from Quests.models import QuestReport
+from Notifications.models import Notification
 
 class UserInteractionType(models.Model):
     user_interaction_type_id = models.AutoField(primary_key=True, db_column='UserInteractionTypeId')  # Primary Key
@@ -28,7 +29,18 @@ class UserInteraction(models.Model):
     user_interaction_content = models.TextField(db_column='UserInteractionContent')
 
     # Need a field for a QuestReportID to which this interaction corresponds
-    quest_report_id = models.ForeignKey(QuestReport, on_delete=models.CASCADE, db_column='QuestReportId', default=1, unique=False, editable=True)
+    #quest_report_id = models.ForeignKey(QuestReport, on_delete=models.CASCADE, 
+    #                                             db_column='QuestReportId', blank=True, 
+    #                                             null=True, unique=False, editable=True)
+
+    # Need a field for a Notification to which this interaction corresponds
+    notification_id = models.ForeignKey(Notification, on_delete=models.CASCADE, 
+                                                 db_column='NotificationId', blank=True, 
+                                                 null=True, unique=False, editable=True)
+
+    # Need a field for a QuestReportID to which this interaction corresponds
+    #notification_id = models.ForeignKey(, on_delete=models.CASCADE, db_column='QuestReportId', default=1, unique=False, editable=True)
+
 
     def __str__(self):
         return self.user_interaction_content
