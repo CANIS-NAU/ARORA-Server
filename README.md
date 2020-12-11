@@ -9,43 +9,80 @@
 <li>rest-condtion 1.0.3</li>
 </ol>
 <h1 id="how-to-set-up-the-server">How to Set Up the Server</h1>
+<h3>First time installation steps</h3>
 <ol>
 <li>
-<p>Get the project from Github</p>
+  <p>Connect to the arora development server via ssh. Follow command line prompts to create/enter a password:<br>
+    ssh [NAUID]@104.248.178.78</p>
 </li>
 <li>
-<p>Go to /root_dir/arora/env, then run command: source ./active to active virtual environment.<br>
-<img src="https://lh3.googleusercontent.com/Bw1KtpaUX7TlGxucETfjQyYWtq8SMZjMl9zjzU5nReRumaEsPttJYrJ5pgBs7E2u10l7bQFpPhk" alt="enable virtual environment"></p>
+<p>Clone this server repository to your root folder on the arora server using: <br>
+  git clone https://github.com/CANIS-NAU/ARORA-Server.git
 </li>
 <li>
-<p>Back to /root_dir</p>
+<p>From the root directory, create your virtual environment by running: <br>
+  python3 -m venv aroraenv</p>
 </li>
 <li>
-<p>Create migration files for building database, sudo python3 <a href="http://manage.py">manage.py</a> makemigrations<br>
-<img src="https://lh3.googleusercontent.com/gsOTJvpbbQMOaBIJChNb2ylIkk0XRjpVJ-kOBtG7w0tKqgSRF9BqvwC581JiiQkO5hfHIt6Ai4U" alt="make migrations"></p>
+<p>Then, still from root directory, activate the virtual environment using: <br>
+  source aroraenv/bin/activate <br>
+  You should now have a command-line prefix of arornaenv (or whatever name you initialzed the environment with)</p>
+</li>
+
+<li>
+<p>Now we need to install the requirements for the server. From the home directory run: <br>
+  pip install -r ARORA-Server/requirements.txt <br>
+ </p>
+</li>
+</ol>
+
+<h3>Run the server (some steps are repeated from above, not a typo!)</h3>
+<ol>
+ <li>
+  <p>Connect to the arora development server via ssh. Follow command line prompts to enter your created password: <br> 
+    ssh [NAUID]@104.248.178.78</p>
 </li>
 <li>
-<p>Create a brand new database, sudo python3 <a href="http://manage.py">manage.py</a> migrate.<br>
-<img src="https://lh3.googleusercontent.com/Gx63J9pzRTlrl0fJB-iHeosq7KUsWXvDLT_8OR6smoF1gwP2CUhfD_xT1yogC7R70WFCYlhji5k" alt="create database"></p>
+<p>From the root directory, activate your virtual environment using: <br>
+  source aroraenv/bin/activate <br>
+  You should now have a command-line prefix of arornaenv (or whatever name you initialzed the environment with)</p>
+</li>
+ <li>
+  <p>Change directory into the cloned ARORA-Server directory: <br> 
+    cd ARORA-Server</p>
 </li>
 <li>
-<p>Create a super user for the first step to access database, sudo python3 <a href="http://manage.py">manage.py</a> createsuperuser.<br>
-<img src="https://lh3.googleusercontent.com/zuB5mo0J4QtEMD8dzlmJCjoE1dlcDQJcaLc-YGUGMN_ooy-9uzhImRx13Wkem1X3kBt9M4PSkuE" alt="create super user"></p>
+<p>Create migration files for building the database: <br>
+  python3 manage.py makemigrations<br>
+</p>
 </li>
 <li>
-<p>Run server, sudo python3 runserver, or you can assign customized IP address and port here, sudo python3 runserver 127.0.0.1 8000.<br>
-<img src="https://lh3.googleusercontent.com/zK1IcvohenI-2xqV-hT8KcpJWpsRRPMNo49HwLtW_hw7-oUOdPsn2SZThIYoinuQvblNX4pCsWY" alt="run server"></p>
+<p>Create a brand new database: <br>
+  python3 manage.py migrate.</p>
 </li>
 <li>
-<p>Open browser, go to 127.0.0.1:8000/admin to access admin site.<br>
-<img src="https://lh3.googleusercontent.com/Rq6EcrMBmbcAXqv8IdKzRWlOGTf33hNk4g5x-2vPgBaJ5WOFT26WdBZnVeHGd27TzCJ5gnbgqxc" alt="log in admin site"></p>
+<p>If the above command caused an error, it was likely due to tables not syncing. Run this instead: <br>
+  python3 manage.py migrate --run-syncdb</p>
 </li>
 <li>
-<p>Log in with your super user account.</p>
+<p>Create a super user if this is the first time creating this database:<br>
+  python3 manage.py createsuperuser</p>
 </li>
 <li>
-<p>Now, you can manage database by your super user account. And we done. Have fun!<br>
-<img src="https://lh3.googleusercontent.com/3n6j2ayXfIkAWPMONnrxjnPQCOOTMVdYq5PsAaroHup7dqrGkHW5rhS62kJB2F0lFxhST7OremQ" alt="admin site"></p>
+<p>Run the server: <br>
+  python3 manage.py runserver [IP_ADDR]:[PORT]
+  python3 manage.py runserver 104.248.178.78:8000</p>
+</li>
+<li>
+<p>The server will now be up and running. Open your browser and go to 104.248.178.78:8000/admin to access admin site.<br>
+</p>
+</li>
+<li>
+<p>Log in with your super user account created above.</p>
+</li>
+<li>
+<p>Now, you can manage the database by your super user account. Use it to manually modify table entries and add users, for example.<br>
+</p>
 </li>
 </ol>
 <p><strong>Note:</strong></p>
