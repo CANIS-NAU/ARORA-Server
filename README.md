@@ -87,8 +87,17 @@
 </ol>
 <p><strong>Note:</strong></p>
 <ol>
+<h3>Additional Steps When Modifying Models and Adding New Tables</h3>
+  <ul>
+    <li>You must manually migrate the new/modified table: <br>
+      python3 manage.py makemigrations TABLENAME <br>
+      Example for modifying UserInfos: <br>
+      python3 manage.py makemigrations UserInfos <br>
+      <strong>Note:</strong> New clones must migrate UserInfos as it was not initialized previously! 
+      </li>
+    </u>
 <li>Using admin site is a optional way to manage your database.</li>
-<li>If you meet any problem when you do the above process, please make sure nothing wrong with your migration files. <a href="https://github.com/LooDaHu/ARORA_General_Introduction/blob/master/README.md">Learn more.</a></li>
+<li>If you meet any problems when you do the above process, please make sure nothing wrong with your migration files. <a href="https://github.com/LooDaHu/ARORA_General_Introduction/blob/master/README.md">Learn more.</a></li>
 </ol>
 <h1 id="models">Models</h1>
 <ol>
