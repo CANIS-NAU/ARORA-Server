@@ -13,25 +13,25 @@
 <ol>
 <li>
   <p>Connect to the arora development server via ssh. Follow command line prompts to create/enter a password:<br>
-    ssh [NAUID]@104.248.178.78</p>
+    <blockquote>ssh [NAUID]@104.248.178.78</blockquote></p>
 </li>
 <li>
 <p>Clone this server repository to your root folder on the arora server using: <br>
-  git clone https://github.com/CANIS-NAU/ARORA-Server.git
+  <blockquote>git clone https://github.com/CANIS-NAU/ARORA-Server.git</blockquote>
 </li>
 <li>
 <p>From the root directory, create your virtual environment by running: <br>
-  python3 -m venv aroraenv</p>
+  <blockquote>python3 -m venv aroraenv</p></blockquote>
 </li>
 <li>
 <p>Then, still from root directory, activate the virtual environment using: <br>
-  source aroraenv/bin/activate <br>
+  <blockquote>source aroraenv/bin/activate</blockquote> <br>
   You should now have a command-line prefix of arornaenv (or whatever name you initialzed the environment with)</p>
 </li>
 
 <li>
 <p>Now we need to install the requirements for the server. From the home directory run: <br>
-  pip install -r ARORA-Server/requirements.txt <br>
+  <blockquote>pip install -r ARORA-Server/requirements.txt <br></blockquote>
  </p>
 </li>
 </ol>
@@ -40,38 +40,38 @@
 <ol>
  <li>
   <p>Connect to the arora development server via ssh. Follow command line prompts to enter your created password: <br> 
-    ssh [NAUID]@104.248.178.78</p>
+    <blockquote>ssh [NAUID]@104.248.178.78</blockquote></p>
 </li>
 <li>
 <p>From the root directory, activate your virtual environment using: <br>
-  source aroraenv/bin/activate <br>
+  <blockquote>source aroraenv/bin/activate </blockquote><br>
   You should now have a command-line prefix of arornaenv (or whatever name you initialzed the environment with)</p>
 </li>
  <li>
   <p>Change directory into the cloned ARORA-Server directory: <br> 
-    cd ARORA-Server</p>
+    <blockquote>cd ARORA-Server</blockquote></p>
 </li>
 <li>
 <p>Create migration files for building the database: <br>
-  python3 manage.py makemigrations<br>
+  <blockquote>python3 manage.py makemigrations</blockquote><br>
 </p>
 </li>
 <li>
 <p>Create a brand new database: <br>
-  python3 manage.py migrate.</p>
+  <blockquote>python3 manage.py migrate</blockquote></p>
 </li>
 <li>
 <p>If the above command caused an error, it was likely due to tables not syncing. Run this instead: <br>
-  python3 manage.py migrate --run-syncdb</p>
+  <blockquote>python3 manage.py migrate --run-syncdb</blockquote></p>
 </li>
 <li>
 <p>Create a super user if this is the first time creating this database:<br>
-  python3 manage.py createsuperuser</p>
+  <blockquote>python3 manage.py createsuperuser</blockquote></p>
 </li>
 <li>
 <p>Run the server: <br>
-  python3 manage.py runserver [IP_ADDR]:[PORT]
-  python3 manage.py runserver 104.248.178.78:8000</p>
+  <blockquote>python3 manage.py runserver [IP_ADDR]:[PORT]</blockquote>
+  <blockquote>python3 manage.py runserver 104.248.178.78:8000</blockquote></p>
 </li>
 <li>
 <p>The server will now be up and running. Open your browser and go to 104.248.178.78:8000/admin to access admin site.<br>
@@ -90,9 +90,9 @@
 <h3>Additional Steps When Modifying Models and Adding New Tables</h3>
   <ul>
     <li>You must manually migrate the new/modified table: <br>
-      python3 manage.py makemigrations TABLENAME <br>
+      <blockquote>python3 manage.py makemigrations TABLENAME</blockquote> <br>
       Example for modifying UserInfos: <br>
-      python3 manage.py makemigrations UserInfos <br>
+      <blockquote>python3 manage.py makemigrations UserInfos</blockquote> <br>
       <strong>Note:</strong> New clones must migrate UserInfos as it was not initialized previously! 
       </li>
     </u>
