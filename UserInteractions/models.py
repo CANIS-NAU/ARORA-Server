@@ -69,3 +69,12 @@ class SuperflySession(models.Model):
     """def completedSuperfly(self):
         b0 = self.superfly_recipe.b0_couwent
         return True"""
+
+#Invite object that the user can accept or decline to join a session.
+class SuperflyInvite(models.Model):
+    session = models.ForeignKey(SuperflySession, db_column="Session", on_delete=models.CASCADE)
+    recipiant = models.ForeignKey(UserInfo, db_column="Recipiant", on_delete=models.CASCADE)
+    accepted = models.BooleanField(default=False)
+
+
+    
