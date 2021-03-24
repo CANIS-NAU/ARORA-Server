@@ -28,11 +28,12 @@ class Butterfly(models.Model):
 class Superfly(models.Model):
     superfly_id = models.AutoField(primary_key=True, db_column='SuperflyId') # Primary Key
 
-    # Foreign Key, ButterflyAtrium:ButterflyAtriumTypeId -> Superfly:ButterflyAtriumId
-    butterfly_atrium_id = models.ForeignKey(ButterflyAtrium, on_delete=models.CASCADE, db_column="ButterflyAtriumId")
-
-    # Foreign Key, ButterflyType:ButterflyTypeId -> Superfly:ButterflyTypeId
-    butterfly_type_id = models.ForeignKey(ButterflyType, on_delete=models.CASCADE, db_column='ButterflyTypeId')
+    #Recipe for the superfly creation using base butterflies.
+    b0_count_needed = models.IntegerField(db_column='B0Count', default = 1)
+    b1_count_needed = models.IntegerField(db_column='B1Count', default = 1)
+    b2_count_needed = models.IntegerField(db_column='B2Count', default = 1)
+    b3_count_needed = models.IntegerField(db_column='B3Count', default = 1) 
+    b4_count_needed = models.IntegerField(db_column='B4Count', default = 1)
 
 class UserButterfly(models.Model):
     user_butterfly_id = models.AutoField(primary_key=True, db_column='UserButterflyId')  # Primary Key
