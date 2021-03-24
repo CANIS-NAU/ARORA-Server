@@ -27,7 +27,11 @@ class Butterfly(models.Model):
 
 class Superfly(models.Model):
     superfly_id = models.AutoField(primary_key=True, db_column='SuperflyId') # Primary Key
-
+    #Unique name for this SuperFly inputted by the user.
+    superfly_name = models.CharField(max_length=15, unique=True, default=None, db_column='SuperflyName')
+    #Photo asset filename TODO: Stick a validator on here to validate image file format.
+    #https://docs.djangoproject.com/en/3.1/ref/validators/
+    superfly_photo = models.CharField(max_length=100,unique=True, default='testimage.png', db_column='SuperflyPhoto')
     #Recipe for the superfly creation using base butterflies.
     b0_count_needed = models.IntegerField(db_column='B0Count', default = 1)
     b1_count_needed = models.IntegerField(db_column='B1Count', default = 1)
