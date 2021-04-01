@@ -17,4 +17,7 @@ urlpatterns = [
     path('interactioninitnotifs/<int:initiator_user_id>', views.UserInteractionsEndPointByInitiatorAndNotifType.as_view()),
     path('userinteraction/<int:receiver_user_id>', views.UserInteractionsEndPointByReceiver.as_view()),
 
+    # Paths to view, join, and delete a user session
+    path('superflysession/<int:session_id>', views.SuperflySessionEndpoint.as_view())
+
 ]    

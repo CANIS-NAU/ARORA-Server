@@ -13,3 +13,13 @@ class UserInteractionTypeSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = models.UserInteractionType
+
+class SuperflySessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = models.SuperflySession
+
+class SuperflyInviteSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = models.SuperflyInvite

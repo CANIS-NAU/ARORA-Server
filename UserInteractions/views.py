@@ -196,4 +196,14 @@ class UserInteractionsEndPointByQuestReportId(APIView):
         except UserInteraction.DoesNotExist:
             return Response({"error": "This QuestReport does not have any associated UserInteractions"}, status=status.HTTP_404_NOT_FOUND)
         
-# TODO: Multiuser interaction where there is one initiator to many receivers (up to 6)
+# TODO: SuperFly session object to be created (POST), viewed (GET), and added to (PATCH)
+class SuperflySessionEndpoint(APIView):
+    def get(self, request, input_id):
+        try:
+            #Possible refactor to eliminate explicitly define primary keys, as Django can autopopluate them for us. 
+            queryset = SuperflySession.objects.filter(session_id=input_id)
+            serializer = SuperflySession(queryset, many=True)
+            return Response(serializer.data)
+        except UserInteractionType.DoesNotExist:
+            return Response({"error": "UserInteractionType does not exist"}, status=status.HTTP_404_NOT_FOUND)
+

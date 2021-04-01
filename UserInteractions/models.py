@@ -48,6 +48,7 @@ class UserInteraction(models.Model):
 
 #Model that houses the participants, progress, and superfly recipe for a superfly session.
 class SuperflySession(models.Model):
+    session_id = models.AutoField(primary_key=True, db_column="SessionId")
     participant_1 = models.ForeignKey(UserInfo, related_name="participant1", 
             db_column="Participant1", null=True, blank=True, on_delete=models.CASCADE)
     participant_2 = models.ForeignKey(UserInfo, related_name="participant2", 
@@ -66,12 +67,17 @@ class SuperflySession(models.Model):
     current_b3_count = models.IntegerField(default=0, db_column="CurrentB3Count")
     current_b4_count = models.IntegerField(default=0, db_column="CurrentB4Count")
 
-    """def completedSuperfly(self):
-        b0 = self.superfly_recipe.b0_couwent
-        return True"""
+    #Checks to see if the counts of b0-b4 are sufficient to create the superfly.
+    def completedSuperfly(self):
+        return (current_b0_count >= superfly_recipe.b0_count_needed 
+        and current_b1_count >= superfly_recipe.b1_count_needed 
+        and current_b2_count >= superfly_recipe.b2_count_needed 
+        and current_b3_count >= superfly_recipe.b3_count_needed 
+        and current_b4_count >= superfly_recipe.b4_count_needed)
 
 #Invite object that the user can accept or decline to join a session.
 class SuperflyInvite(models.Model):
+    invite_id = models.AutoField(primary_key=True, db_column="InviteId")
     session = models.ForeignKey(SuperflySession, db_column="Session", on_delete=models.CASCADE)
     recipiant = models.ForeignKey(UserInfo, db_column="Recipiant", on_delete=models.CASCADE)
     accepted = models.BooleanField(default=False)
