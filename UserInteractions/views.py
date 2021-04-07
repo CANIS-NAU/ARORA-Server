@@ -207,3 +207,10 @@ class SuperflySessionEndpoint(APIView):
         except UserInteractionType.DoesNotExist:
             return Response({"error": "UserInteractionType does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
+    def post(self, request):
+        serializer = UserInteractions.SuperflySessionSerializer(data=request.data)
+        if serializer.is_valid():
+            new_session = serializer.save()
+            return Response({"session_id": new_session.session_id}, status=status.HTTP_200_OK)
+        return Response({"error": serialzer.errors}, status=status.HTTP_400_BAD_REQUEST)
+

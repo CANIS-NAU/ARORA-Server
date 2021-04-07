@@ -4,7 +4,7 @@ from . import models
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
-
+    #Generate a username from authentication
     user_name = serializers.CharField(source='username', max_length=50)
 
     class Meta:
@@ -12,9 +12,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
             'user_info_id',
             'user_current_mood_updated',
             'user_created_at',
-            'user_catching_date',
-            'user_name',
-            'user_name_of_strength',
+            'user_catching_date',            
             'user_current_mood',
             'user_id',
             'user_b0_count',

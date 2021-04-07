@@ -33,11 +33,11 @@ class Superfly(models.Model):
     #https://docs.djangoproject.com/en/3.1/ref/validators/
     superfly_photo = models.CharField(max_length=100,unique=True, default='testimage.png', db_column='SuperflyPhoto')
     #Recipe for the superfly creation using base butterflies.
-    b0_count_needed = models.IntegerField(db_column='B0Count', default = 1)
-    b1_count_needed = models.IntegerField(db_column='B1Count', default = 1)
-    b2_count_needed = models.IntegerField(db_column='B2Count', default = 1)
-    b3_count_needed = models.IntegerField(db_column='B3Count', default = 1) 
-    b4_count_needed = models.IntegerField(db_column='B4Count', default = 1)
+    b0_count = models.IntegerField(db_column='B0Count', default = 1)
+    b1_count = models.IntegerField(db_column='B1Count', default = 1)
+    b2_count = models.IntegerField(db_column='B2Count', default = 1)
+    b3_count = models.IntegerField(db_column='B3Count', default = 1) 
+    b4_count = models.IntegerField(db_column='B4Count', default = 1)
 
 class UserSuperflies(models.Model):
     superfly = models.ForeignKey(Superfly, on_delete=models.CASCADE, db_column='Superfly')
