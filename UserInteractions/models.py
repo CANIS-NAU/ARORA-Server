@@ -49,17 +49,12 @@ class UserInteraction(models.Model):
 #Model that houses the participants, progress, and superfly recipe for a superfly session.
 class SuperflySession(models.Model):
     session_id = models.AutoField(primary_key=True, db_column="SessionId")
-    participant_0 = models.ForeignKey(UserInfo, related_name="participant0", 
-            db_column="Participant0", null=True, blank=True, on_delete=models.CASCADE)
-    participant_1 = models.ForeignKey(UserInfo, related_name="participant1", 
-            db_column="Participant1", null=True, blank=True, on_delete=models.CASCADE)
-    participant_2 = models.ForeignKey(UserInfo, related_name="participant2", 
-            db_column="Participant2",null=True, blank=True, on_delete=models.CASCADE)
-    participant_3 = models.ForeignKey(UserInfo, related_name="participant3", 
-            db_column="Participant3", null = True, blank=True, on_delete=models.CASCADE)
-    participant_4 = models.ForeignKey(UserInfo, related_name="participant4", 
-            db_column="Participant4", null = True, blank=True, on_delete=models.CASCADE)
-    superfly_recipe = models.ForeignKey(Superfly, on_delete=models.CASCADE)
+    participant_0 = models.ForeignKey(UserInfo, db_column="Participant0", related_name="participant_0", on_delete=models.CASCADE)
+    participant_1 = models.ForeignKey(UserInfo, db_column="Participant1", related_name="participant_1", null=True, blank=True, on_delete=models.CASCADE)
+    participant_2 = models.ForeignKey(UserInfo, db_column="Participant2", related_name="participant_2", null=True, blank=True, on_delete=models.CASCADE)
+    participant_3 = models.ForeignKey(UserInfo, db_column="Participant3", related_name="participant_3", null=True, blank=True, on_delete=models.CASCADE)
+    participant_4 = models.ForeignKey(UserInfo, db_column="Participant4", related_name="participant_4", null=True, blank=True, on_delete=models.CASCADE)
+    superfly_recipe = models.ForeignKey(Superfly, null=True, blank=True, on_delete=models.CASCADE)
     #CurrentCounts: Current amount of butterflies contributed in this session.
     current_b0_count = models.IntegerField(default=0, db_column="CurrentB0Count")
     current_b1_count = models.IntegerField(default=0, db_column="CurrentB1Count")

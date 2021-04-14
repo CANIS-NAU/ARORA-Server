@@ -198,19 +198,19 @@ class UserInteractionsEndPointByQuestReportId(APIView):
         
 # TODO: SuperFly session object to be created (POST), viewed (GET), and added to (PATCH)
 class SuperflySessionEndpoint(APIView):
-    def get(self, request, input_id):
+    def get(self, request):
         try:
             #Possible refactor to eliminate explicitly define primary keys, as Django can autopopluate them for us. 
-            queryset = SuperflySession.objects.filter(session_id=input_id)
-            serializer = SuperflySession(queryset, many=True)
+            queryset = SuperflySession.objects.all()
+            serializer = SuperflySessionSerializer(queryset, many=True)
             return Response(serializer.data)
-        except UserInteractionType.DoesNotExist:
+        except SuperflySession.DoesNotExist:
             return Response({"error": "UserInteractionType does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
-        serializer = UserInteractions.SuperflySessionSerializer(data=request.data)
+        serializer = SuperflySessionSerializer(data=request.data)
         if serializer.is_valid():
             new_session = serializer.save()
             return Response({"session_id": new_session.session_id}, status=status.HTTP_200_OK)
-        return Response({"error": serialzer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
