@@ -27,12 +27,21 @@ class Butterfly(models.Model):
 
 class Superfly(models.Model):
     superfly_id = models.AutoField(primary_key=True, db_column='SuperflyId') # Primary Key
+    #Unique name for this SuperFly inputted by the user.
+    superfly_name = models.CharField(max_length=15, unique=True, default=None, db_column='SuperflyName')
+    #Photo asset filename TODO: Stick a validator on here to validate image file format.
+    #https://docs.djangoproject.com/en/3.1/ref/validators/
+    superfly_photo = models.CharField(max_length=100,unique=True, default='testimage.png', db_column='SuperflyPhoto')
+    #Recipe for the superfly creation using base butterflies.
+    b0_count = models.IntegerField(db_column='B0Count', default = 1)
+    b1_count = models.IntegerField(db_column='B1Count', default = 1)
+    b2_count = models.IntegerField(db_column='B2Count', default = 1)
+    b3_count = models.IntegerField(db_column='B3Count', default = 1) 
+    b4_count = models.IntegerField(db_column='B4Count', default = 1)
 
-    # Foreign Key, ButterflyAtrium:ButterflyAtriumTypeId -> Superfly:ButterflyAtriumId
-    butterfly_atrium_id = models.ForeignKey(ButterflyAtrium, on_delete=models.CASCADE, db_column="ButterflyAtriumId")
-
-    # Foreign Key, ButterflyType:ButterflyTypeId -> Superfly:ButterflyTypeId
-    butterfly_type_id = models.ForeignKey(ButterflyType, on_delete=models.CASCADE, db_column='ButterflyTypeId')
+class UserSuperflies(models.Model):
+    superfly = models.ForeignKey(Superfly, on_delete=models.CASCADE, db_column='Superfly')
+    user_id = models.ForeignKey(UserInfo, on_delete=models.CASCADE, db_column='User')
 
 class UserButterfly(models.Model):
     user_butterfly_id = models.AutoField(primary_key=True, db_column='UserButterflyId')  # Primary Key

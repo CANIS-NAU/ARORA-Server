@@ -23,7 +23,7 @@ class MoodReport(models.Model):
     q1_response = models.IntegerField(db_column="Q1MoodResponse", default=1)
 
     # Q2
-    q2_response = models.IntegerField(db_column="Q2MoodResponse", default=2)
+    q2_response = models.IntegerField(db_column="Q2MoodResponse", default=1)
 
     def __int__(self):
         return self.mood_report_id
