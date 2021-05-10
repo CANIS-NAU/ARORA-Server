@@ -17,13 +17,14 @@ class UserInteractionTypeSerializer(serializers.ModelSerializer):
         model = models.UserInteractionType
 
 class SuperflySessionSerializer(serializers.ModelSerializer):
+    session_id = serializers.IntegerField(read_only=True)
     class Meta:
         #FIXME: This and the import break with random errors.
         #def getRandomRecipe(self):
          #   print("Ree")
           #  return Superfly.objects.order_by("?").first()
-        fields = '__all__'
         model = models.SuperflySession
+        fields = "__all__"
         #model.superfly = getRandomRecipe(self)
 
 class SuperflyInviteSerializer(serializers.ModelSerializer):

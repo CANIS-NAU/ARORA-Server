@@ -14,7 +14,7 @@ class MoodType(models.Model):
 
 class MoodReport(models.Model):
     mood_report_id = models.AutoField(primary_key=True, db_column='MoodReportId')  # Primary Key
-    mood_report_created_at = models.DateTimeField(auto_now_add=True, db_column='MoodReportCreatedAt')
+    mood_report_date = models.DateTimeField(auto_now_add=True, db_column='MoodReportDate')
 
     # Foreign Key, UserInfo:UserId -> MoodReport:UserId
     user_id = models.ForeignKey(UserInfo, on_delete=models.CASCADE, db_column='UserId')
