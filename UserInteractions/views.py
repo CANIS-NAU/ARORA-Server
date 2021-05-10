@@ -8,6 +8,7 @@ from UserInfos.models import UserInfo
 from Notifications.models import Notification
 from Butterflies.models import *
 from .serializers import *
+import random
 
 
 class UserInteractionList(generics.ListAPIView):
@@ -199,7 +200,10 @@ class UserInteractionsEndPointByQuestReportId(APIView):
         
 # TODO: SuperFly session object to be created (POST), viewed (GET), and added to (PATCH)
 class SuperflySessionEndpoint(APIView):
-    
+    def getRandomRecipe(self):
+        recipeList = list(Superfly.objects.all())
+        recipeIndex = random.randint(0, len(recipeList) - 1)
+        return recipeList[recipeIndex]
 
     def get(self, request, session_id):
         try:
@@ -213,7 +217,11 @@ class SuperflySessionEndpoint(APIView):
     def post(self, request):
         serializer = SuperflySessionSerializer(data=request.data)
         if serializer.is_valid():
+            new_session = SuperflySession()
+            new_session.superfly_recipe = self.getRandomRecipe()
+            print(new_session.superfly_recipe.superfly_name)
             new_session = serializer.save()
+
          #   print("Session superfly: %d", new_session.superfly_recipe.superfly_id)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

@@ -14,6 +14,7 @@ class UserInfo(AbstractUser):
     
     user_current_mood = models.IntegerField(default=0, db_column='UserCurrentMood')
     user_id = models.IntegerField(default=2147483648, unique=False, editable=False, db_column='UserId')
+    user_superflysession_id = models.IntegerField(default=-1, db_column='SuperflySessionId')
     
     #Butterfly Counts, an inventory of butterflies caught in M4 for the current user. Composite attribute 
     #These counts are used to display in the atrium and create superflies in the superfly multiplayer game. 
