@@ -218,9 +218,11 @@ class SuperflySessionEndpoint(APIView):
         serializer = SuperflySessionSerializer(data=request.data)
         if serializer.is_valid():
             new_session = SuperflySession()
-            new_session.superfly_recipe = self.getRandomRecipe()
-            print(new_session.superfly_recipe.superfly_name)
             new_session = serializer.save()
+            new_session.superfly_recipe = self.getRandomRecipe()
+            new_session.save()
+            
+            print(new_session.superfly_recipe.superfly_name)
 
          #   print("Session superfly: %d", new_session.superfly_recipe.superfly_id)
             return Response(serializer.data, status=status.HTTP_200_OK)
