@@ -205,10 +205,16 @@ class SuperflySessionEndpoint(APIView):
         recipeIndex = random.randint(0, len(recipeList) - 1)
         return recipeList[recipeIndex]
     
-    def inviteParticipants(self):
+    def inviteParticipants(self, new_session):
+        default_uid = 2147483648
+        #First grab 4 other users
+        userList = list(UserInfo.objects.filter(user_id__lt=default_uid, user_superflysession_id=-1))
+        print(userList)
+        
         for i in range(1,5):
-            #Invite four participants
-            print("Inviting participant :" + str(i))
+            #Invite four participants by creating invite objects linking them to this session.
+            curr_invite = SuperflyInvite(session=new_session, )
+            
 
     def get(self, request, session_id):
         try:
@@ -233,7 +239,7 @@ class SuperflySessionEndpoint(APIView):
 
          #  print("Session superfly: %d", new_session.superfly_recipe.superfly_id)
             # We posted a session, so let's invite four other users to it.
-            self.inviteParticipants()
+            self.inviteParticipants(new_session)
             print(serializer.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

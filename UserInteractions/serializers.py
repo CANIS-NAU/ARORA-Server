@@ -3,6 +3,7 @@ from rest_framework import serializers
 from . import models
 from .models import Superfly
 from Butterflies.serializers import SuperflySerializer
+from UserInfos.serializers import UserInfoSerializer
 
 
 
@@ -19,7 +20,15 @@ class UserInteractionTypeSerializer(serializers.ModelSerializer):
 
 class SuperflySessionSerializer(serializers.ModelSerializer):
     session_id = serializers.IntegerField(read_only=True)
+    #Set this SuperflySerializer to have the whole representation sent, rather than its id. 
+    #Necessary to serialize the model into a Superfly model in the SuperflySession model client-side. 
     superfly_recipe = SuperflySerializer(read_only=True)
+    #Do the same for each user in the list of participants. 
+    #participant_0 = UserInfoSerializer(read_only=False)
+    #participant_1 = UserInfoSerializer(required=False)
+    #participant_2 = UserInfoSerializer(required=False)
+    #participant_3 = UserInfoSerializer(required=False)
+    #participant_4 = UserInfoSerializer(required=False)
     class Meta:
         model = models.SuperflySession
         fields = "__all__"
