@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from . import models
-#from .models import *
+from .models import Superfly
+from Butterflies.serializers import SuperflySerializer
 
 
 
@@ -18,10 +19,10 @@ class UserInteractionTypeSerializer(serializers.ModelSerializer):
 
 class SuperflySessionSerializer(serializers.ModelSerializer):
     session_id = serializers.IntegerField(read_only=True)
+    superfly_recipe = SuperflySerializer(read_only=True)
     class Meta:
         model = models.SuperflySession
         fields = "__all__"
-        #model.superfly = getRandomRecipe(self)
 
 class SuperflyInviteSerializer(serializers.ModelSerializer):
     class Meta:

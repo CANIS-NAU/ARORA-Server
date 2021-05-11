@@ -204,6 +204,11 @@ class SuperflySessionEndpoint(APIView):
         recipeList = list(Superfly.objects.all())
         recipeIndex = random.randint(0, len(recipeList) - 1)
         return recipeList[recipeIndex]
+    
+    def inviteParticipants(self):
+        for i in range(1,5):
+            #Invite four participants
+            print("Inviting participant :" + str(i))
 
     def get(self, request, session_id):
         try:
@@ -217,24 +222,27 @@ class SuperflySessionEndpoint(APIView):
     def post(self, request):
         serializer = SuperflySessionSerializer(data=request.data)
         if serializer.is_valid():
+            #First init all fields to defaults
             new_session = SuperflySession()
             new_session = serializer.save()
+            #Then set a random recipe and update with save(). 
             new_session.superfly_recipe = self.getRandomRecipe()
             new_session.save()
             
             print(new_session.superfly_recipe.superfly_name)
 
-         #   print("Session superfly: %d", new_session.superfly_recipe.superfly_id)
+         #  print("Session superfly: %d", new_session.superfly_recipe.superfly_id)
+            # We posted a session, so let's invite four other users to it.
+            self.inviteParticipants()
+            print(serializer.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-    def patch(self, request, new_participant):
+    def patch(self, request, value):
         #Test
         print("Hello world")
     
 
-    def patch(self, request, new_count):
-        #Test
-        print("Updating current counts")
+    
 
     
