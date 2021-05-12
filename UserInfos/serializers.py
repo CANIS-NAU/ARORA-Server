@@ -10,17 +10,18 @@ class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
             'user_info_id',
+            'user_id',
             'user_current_mood_updated',
             'user_current_mood',
-            'user_id',
-            'user_superflysession_id',
+            'user_current_butterfly',
+            'user_created_at',
             'user_name',
             'user_b0_count',
             'user_b1_count',
             'user_b2_count',
             'user_b3_count',
             'user_b4_count',
-            'user_current_butterfly',
+            'user_superflysession_id',
             'user_pollen')
         model = models.UserInfo
 

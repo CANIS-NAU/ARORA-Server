@@ -207,14 +207,38 @@ class SuperflySessionEndpoint(APIView):
     
     def inviteParticipants(self, new_session):
         default_uid = 2147483648
-        #First grab 4 other users
+        #First grab 4 other users, don't need to consider host as he will be in his own session with an
+        #id. 
         userList = list(UserInfo.objects.filter(user_id__lt=default_uid, user_superflysession_id=-1))
-        print(userList)
         
-        for i in range(1,5):
+        availableParticipants = len(userList)
+        random.shuffle(userList)
+        print(userList)
+        print("Number of participants available: ", availableParticipants)
+        sampledParticipants = []
+        #Cases needed here, depending on how many users are available. 
+        #If there is not a single user to invite, send back False to give an HTTP error message code.
+        if(availableParticipants == 0):
+            return False
+        elif(availableParticipants == 1):
+            sampledParticipants = random.sample(userList,1)
+        elif(availableParticipants == 2):
+            sampledParticipants = random.sample(userList,2)
+        elif(availableParticipants == 3):
+            sampledParticipants = random.sample(userList,3)
+        #If we have no edge case number, we can select four. 
+        else:
+            sampledParticipants = random.sample(userList,4)
+
+        for i in range(0, availableParticipants):
+            print(i)
             #Invite four participants by creating invite objects linking them to this session.
-            curr_invite = SuperflyInvite(session=new_session, )
-            
+            #Only invite if we haven't already or they deleted it.
+            curr_invite = SuperflyInvite(session=new_session, recipiant=userList[i])
+            curr_invite.save()
+
+        #Return true after we send the invites sucessfully
+        return True
 
     def get(self, request, session_id):
         try:
@@ -235,12 +259,14 @@ class SuperflySessionEndpoint(APIView):
             new_session.superfly_recipe = self.getRandomRecipe()
             new_session.save()
             
-            print(new_session.superfly_recipe.superfly_name)
+            print(new_session.participant_0.email)
 
          #  print("Session superfly: %d", new_session.superfly_recipe.superfly_id)
             # We posted a session, so let's invite four other users to it.
-            self.inviteParticipants(new_session)
-            print(serializer.data)
+            canInvite = self.inviteParticipants(new_session)
+            if(not canInvite):
+                return Response({"error": serializer.errors}, status=status.HTTP_409_CONFLICT)
+            #print(serializer.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
