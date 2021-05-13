@@ -205,38 +205,46 @@ class SuperflySessionEndpoint(APIView):
         recipeIndex = random.randint(0, len(recipeList) - 1)
         return recipeList[recipeIndex]
     
-    def inviteParticipants(self, new_session):
-        default_uid = 2147483648
-        #First grab 4 other users, don't need to consider host as he will be in his own session with an
-        #id. 
-        userList = list(UserInfo.objects.filter(user_id__lt=default_uid, user_superflysession_id=-1))
-        
-        availableParticipants = len(userList)
-        random.shuffle(userList)
-        print(userList)
-        print("Number of participants available: ", availableParticipants)
+    def getParticipants(self, availableParticipants, userList):
         sampledParticipants = []
         #Cases needed here, depending on how many users are available. 
         #If there is not a single user to invite, send back False to give an HTTP error message code.
         if(availableParticipants == 0):
             return False
+        #Cases where we do not have at least 6 available to sample. 
         elif(availableParticipants == 1):
             sampledParticipants = random.sample(userList,1)
         elif(availableParticipants == 2):
             sampledParticipants = random.sample(userList,2)
         elif(availableParticipants == 3):
             sampledParticipants = random.sample(userList,3)
-        #If we have no edge case number, we can select four. 
-        else:
+        elif(availableParticipants == 4):
             sampledParticipants = random.sample(userList,4)
+        elif(availableParticipants == 5):
+            sampledParticipants = random.sample(userList,5)
+        #If we have no edge case number, we can select up to six for all other cases. 
+        else:
+            sampledParticipants = random.sample(userList,6)
+        return sampledParticipants
 
-        for i in range(0, availableParticipants):
+    def inviteParticipants(self, new_session):
+        #This id excludes default superusers.
+        default_uid = 2147483648
+        #First grab 4 other users, don't need to consider host as he is already in the new session.
+        userList = list(UserInfo.objects.filter(user_id__lt=default_uid, user_superflysession_id=-1))   
+        #Total amount of participants available.
+        availableParticipants = len(userList)
+        print(userList)
+        print("Number of participants available: ", availableParticipants)
+        sampledParticipants = self.getParticipants(availableParticipants,userList)
+        print("Chosen participants: ", sampledParticipants)
+        #Now we know how many people to invite, send them. TODO: Race condition between clients?
+        for i in range(0, len(sampledParticipants)):
             print(i)
             #Invite four participants by creating invite objects linking them to this session.
             #Only invite if we haven't already or they deleted it.
             curr_invite = SuperflyInvite(session=new_session, recipiant=userList[i])
             curr_invite.save()
-
         #Return true after we send the invites sucessfully
         return True
 
@@ -270,10 +278,13 @@ class SuperflySessionEndpoint(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-    def patch(self, request, value):
-        #Test
-        print("Hello world")
-    
+    def patch(self, request, input_session_id):
+        #Get a session to update, if it exists. 
+        try:
+            updated_session = SuperflySession.objects.get(session_id=input_session_id)
+        except UserInteraction.DoesNotExist:
+            return Response({"error": "UserInteraction does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        #Found the session, so let's update it. 
 
     
 
