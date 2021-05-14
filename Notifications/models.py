@@ -18,6 +18,7 @@ class CommentType(models.Model):
     def __int__(self):
         return self.comment_type_id
 
+#Remnants of old early invite system, scrapped for now. 
 class Notification(models.Model):
     notification_id = models.AutoField(primary_key=True, db_column='NotificationId')  # Primary Key
 
@@ -27,6 +28,7 @@ class Notification(models.Model):
 
     #Foreign Keys
     #The following will be filled depending on the correspoding notification type:
+    #Self???????
     like_pointer_id = models.ForeignKey("self", related_name='notif_like_ptr', on_delete=models.CASCADE,
                                            null=True, blank= True)
 

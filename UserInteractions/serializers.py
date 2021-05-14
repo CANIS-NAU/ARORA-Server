@@ -3,7 +3,7 @@ from rest_framework import serializers
 from . import models
 from .models import Superfly
 from Butterflies.serializers import SuperflySerializer
-from UserInfos.serializers import UserInfoSerializer
+from UserInfos.serializers import UserInfoSerializer, UserSerializer
 
 
 
@@ -24,7 +24,7 @@ class SuperflySessionSerializer(serializers.ModelSerializer):
     #Necessary to serialize the model into a Superfly model in the SuperflySession model client-side. 
     superfly_recipe = SuperflySerializer(read_only=True)
     #Do the same for each user in the list of participants. 
-    #participant_0 = UserInfoSerializer(read_only=False)
+    participant_0 = UserInfoSerializer(many=False, required=False)
     #participant_1 = UserInfoSerializer(required=False)
     #participant_2 = UserInfoSerializer(required=False)
     #participant_3 = UserInfoSerializer(required=False)

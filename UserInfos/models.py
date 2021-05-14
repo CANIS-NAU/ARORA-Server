@@ -5,19 +5,19 @@ from django.contrib.auth.models import AbstractUser
 
 
 class UserInfo(AbstractUser):
+    #Autogenned primary key
     user_info_id = models.AutoField(primary_key=True, db_column='UserInfoId')  # PK
     user_id = models.IntegerField(default=2147483648, unique=False, editable=False, db_column='UserId')
+    user_created_at = models.DateTimeField(auto_now_add=True, editable=False, db_column='UserCreatedAt')
+    user_current_mood = models.IntegerField(default=0, db_column='UserCurrentMood')
     #Date since most recent mood report POST.
     user_current_mood_updated = models.DateTimeField(default=datetime(1979, 12, 31, 0, 0, 0, 000000, tzinfo=utc),
                                                      db_column='UserCurrentMoodUpdated')
-    user_created_at = models.DateTimeField(auto_now_add=True, editable=False, db_column='UserCreatedAt')
     # This is the butterfly that displays on the profile page, not currently editable from the mobile app. 
     user_current_butterfly = models.IntegerField(default=0, db_column='UserCurrentButterfly')
-    #user_catching_date = models.DateTimeField(default=datetime(1979, 12, 31, 0, 0, 0, 000000, tzinfo=utc), db_column='UserCatchingDate')
-    
-    user_current_mood = models.IntegerField(default=0, db_column='UserCurrentMood')
 
-    
+    # This is the pollen gained from doing the mindfulness activities. It is spent to enter the butterfly catching game. 
+    user_pollen = models.IntegerField(default=0, db_column='UserPollen')
     
     #Butterfly Counts, an inventory of butterflies caught in M4 for the current user. Composite attribute 
     #These counts are used to display in the atrium and create superflies in the superfly multiplayer game. 
@@ -29,19 +29,24 @@ class UserInfo(AbstractUser):
     
     #Id of any superfly session the user is in currently. -1 if they are not in one. 
     user_superflysession_id = models.IntegerField(default=-1, db_column='SuperflySessionId')
-
-    #user_current_location_lat = models.DecimalField(max_digits=5, decimal_places=2, default=0.0,
-     #                                               db_column='UserCurrentLocationLat')
-    #user_current_location_long = models.DecimalField(max_digits=5, decimal_places=2, default=0.0,
-    #                                                 db_column='UserCurrentLocationLong')
-    #user_current_location_updated = models.DateTimeField(default=datetime(1979, 12, 31, 0, 0, 0, 000000, tzinfo=utc),
-    #                                                     db_column='UserCurrentLocationUpdated')
+                                                  
     
-    # This is the pollen gained from doing the mindfulness activities. It is spent to enter the butterfly catching game. 
-    user_pollen = models.IntegerField(default=0, db_column='UserPollen')
+    
 
     email = models.EmailField(unique=True)
     REQUIRED_FIELDS = ['email']#, 'user_name']
+
+    
+    #NOT USED CURRENTLY
+    #user_catching_date = models.DateTimeField(default=datetime(1979, 12, 31, 0, 0, 0, 000000, tzinfo=utc), db_column='UserCatchingDate')
+    #user_current_location_lat = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, 
+     #                                               db_column='UserCurrentLocationLat')
+    #user_current_location_long = models.DecimalField(max_digits=5, decimal_places=2, default=0.0,
+    #                                                 db_column='UserCurrentLocationLong')
+    #user_current_location_updated = models.DateTimeField(default=datetime(1979, 12, 31, 0, 0, 0, 000000, 
+    # tzinfo=utc, db_column='UserCurrentLocationUpdated'),
+    
+
 
     def __str__(self):
         return self.username

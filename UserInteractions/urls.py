@@ -20,6 +20,10 @@ urlpatterns = [
     # Paths to view, join, and delete a user session
     #path('superflysession/<int:session_id>', views.SuperflySessionEndpoint.as_view()),
     path('superflysession', views.SuperflySessionEndpoint.as_view()),
-    path('superflysession/<int:session_id>', views.SuperflySessionEndpoint.as_view())
+    path('superflysession/<int:session_id>', views.SuperflySessionEndpoint.as_view()),
+
+    #Paths to manage invites. 
+    path('superflyinvite', views.SuperflyInviteEndpoint.as_view()),
+    path('superflyinvite/<int:recipient>', views.SuperflySessionEndpoint.as_view())
 
 ]    
