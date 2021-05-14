@@ -269,6 +269,10 @@ class SuperflySessionEndpoint(APIView):
             print(type(new_session.participant_0))
             #participant_0qs = UserInfo.objects.filter(user_id=new_session.participant_0)
             #new_session.participant_0 = participant_0qs
+            #Sets the userinfo model id?
+            new_session.participant_0.user_superflysession_id = new_session.session_id
+            #Might need to save here to update the new model???
+            new_session.participant_0.save()
             new_session.save()
             
             print(new_session.participant_0.email)
