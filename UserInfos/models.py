@@ -28,10 +28,7 @@ class UserInfo(AbstractUser):
     user_b4_count = models.IntegerField(default=0, db_column="UserB4Count") # Blue   
     
     #Id of any superfly session the user is in currently. -1 if they are not in one. 
-    user_superflysession_id = models.IntegerField(default=-1, db_column='SuperflySessionId')
-                                                  
-    
-    
+    user_superflysession_id = models.IntegerField(default=-1, db_column='SuperflySessionId')  
 
     email = models.EmailField(unique=True)
     REQUIRED_FIELDS = ['email']#, 'user_name']
