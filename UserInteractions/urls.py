@@ -24,6 +24,6 @@ urlpatterns = [
 
     #Paths to manage invites. 
     path('superflyinvite', views.SuperflyInviteEndpoint.as_view()),
-    path('superflyinvite/<int:recipient>', views.SuperflySessionEndpoint.as_view())
+    path('superflyinvite/<int:uid_recipient>', views.SuperflyInviteEndpoint.as_view())
 
 ]    

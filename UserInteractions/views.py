@@ -319,9 +319,11 @@ class SuperflySessionEndpoint(APIView):
 
 class SuperflyInviteEndpoint(APIView):
     #Used to get all invites for the inputted userid. 
-    def get(self, request, input_id):
+    def get(self, request, uid_recipient):
         try:
-            invite_qs = SuperflyInvite.objects.filter(recipent=input_id)
+            print("Getting invites for id: ", uid_recipient)
+            invite_qs = SuperflyInvite.objects.filter(uid_recipient=uid_recipient)
+            print(list(invite_qs))
             serializer = SuperflyInviteSerializer(invite_qs, many=True)
             return Response(serializer.data)
         except SuperflyInvite.DoesNotExist:

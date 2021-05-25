@@ -25,15 +25,17 @@ class SuperflySessionSerializer(serializers.ModelSerializer):
     superfly_recipe = SuperflySerializer(read_only=True)
     #Do the same for each user in the list of participants. 
     participant_0 = UserInfoSerializer(many=False, required=False)
-    #participant_1 = UserInfoSerializer(required=False)
-    #participant_2 = UserInfoSerializer(required=False)
-    #participant_3 = UserInfoSerializer(required=False)
-    #participant_4 = UserInfoSerializer(required=False)
+    #Use these too? Probably TODO for joining and viewing users. 
+    participant_1 = UserInfoSerializer(required=False)
+    participant_2 = UserInfoSerializer(required=False)
+    participant_3 = UserInfoSerializer(required=False)
+    participant_4 = UserInfoSerializer(required=False)
     class Meta:
         model = models.SuperflySession
         fields = "__all__"
 
 class SuperflyInviteSerializer(serializers.ModelSerializer):
+    session = SuperflySessionSerializer(read_only=True)
     class Meta:
         fields = '__all__'
         model = models.SuperflyInvite
