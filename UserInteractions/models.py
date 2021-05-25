@@ -52,11 +52,13 @@ class SuperflySession(models.Model):
     session_start_date = models.DateTimeField(auto_now = True, db_column="SessionStartDate")
     session_participant_count = models.IntegerField(default=1, db_column="ParticipantCount") # How many users are in the session
     session_started = models.BooleanField(default=False) #Has the game started with enough participants?
+    #user_ids for each participant in the session
     id_0 = models.IntegerField(default=-1, db_column = "P0Id")
     id_1 = models.IntegerField(default=-1, db_column = "P1Id")
     id_2 = models.IntegerField(default=-1, db_column = "P2Id")
     id_3 = models.IntegerField(default=-1, db_column = "P3Id")
-    id_4 = models.IntegerField(default=-1, db_column = "P4Id") 
+    id_4 = models.IntegerField(default=-1, db_column = "P4Id")
+    #Actual foreign key objects for each participant, corresponding with the 5 ids above.  
     participant_0 = models.ForeignKey(UserInfo, db_column="Participant0", related_name="participant_0", null=True, blank = True, on_delete=models.CASCADE)
     participant_1 = models.ForeignKey(UserInfo, db_column="Participant1", related_name="participant_1", null=True, blank=True, on_delete=models.CASCADE)
     participant_2 = models.ForeignKey(UserInfo, db_column="Participant2", related_name="participant_2", null=True, blank=True, on_delete=models.CASCADE)

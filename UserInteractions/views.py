@@ -241,7 +241,7 @@ class SuperflySessionEndpoint(APIView):
             print(sampledParticipants[i].user_superflysession_id)
             #Invite four participants by creating invite objects linking them to this session.
             #Only invite if we haven't already or they deleted it.
-            curr_invite = SuperflyInvite(session=new_session, recipient=sampledParticipants[i], uid_recipiant = sampledParticipants[i].user_id)
+            curr_invite = SuperflyInvite(session=new_session, recipient=sampledParticipants[i], uid_recipient = sampledParticipants[i].user_id)
             curr_invite.save()
         #Return True after we send the invites sucessfully
         return True
@@ -261,14 +261,11 @@ class SuperflySessionEndpoint(APIView):
         print("Serializer", serializer)
         if serializer.is_valid():
             print("Serializer is valid?")
-            #First init all fields to defaults
+            #First init all fields to defaults, not sure if this first line is needed TODO
             new_session = SuperflySession()
             new_session = serializer.save()
 
-            
-            
             #Get the record for the participant id that created the session. 
-            
             participant_0 = UserInfo.objects.get(user_id = new_session.id_0) 
             
             #list(UserInfo.objects.filter(user_id=new_session.id_0))[0]
@@ -307,14 +304,42 @@ class SuperflySessionEndpoint(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         print("Serializer not is valid")
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def verify_participants(self, current_session):
+        print(current_session.id_1)
 
-    def patch(self, request, input_session_id):
-        #Get a session to update, if it exists. 
+    def put(self, request, input_session_id):
         try:
             updated_session = SuperflySession.objects.get(session_id=input_session_id)
         except UserInteraction.DoesNotExist:
             return Response({"error": "UserInteraction does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        #Found the session, so let's update it TODO.
+
+        serializer = SuperflySessionSerializer(updated_session, data=request.data)
+        if serializer.is_valid():
+            updated_session = serializer.save()
+            return Response({"user_interaction_id": updated_session.user_interaction_id},
+                            status=status.HTTP_200_OK)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, session_id):
+        #Get a session to update, if it exists. 
+        try:
+            updated_session = SuperflySession.objects.get(session_id=session_id) 
+
+        except UserInteraction.DoesNotExist:
+            return Response({"error": "SuperflySession does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = SuperflySessionSerializer(updated_session, data=request.data, partial=True)
+    
+        if serializer.is_valid():
+            updated_session = serializer.save()
+            #Found the session, so let's update it TODO.
+            self.verify_participants(updated_session)
+            
+            return Response({"participant_1_id": updated_session.id_1},
+                            status=status.HTTP_200_OK)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        
 
 
 class SuperflyInviteEndpoint(APIView):
