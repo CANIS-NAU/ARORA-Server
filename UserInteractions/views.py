@@ -205,7 +205,16 @@ class SuperflySessionEndpoint(APIView):
         recipeIndex = random.randint(0, len(recipeList) - 1)
         return recipeList[recipeIndex]
     
-    def getParticipants(self, num_available, userList):
+    def getAvailable(self, new_session):
+        #This id excludes default superusers.
+        default_uid = 2147483648
+        #First grab 4 other users, don't need to consider host as he is already in the new session.
+        userList = list(UserInfo.objects.filter(user_id__lt=default_uid, user_superflysession_id=-1))   
+
+        #Check to see if we couldn't sample anyone. 
+        return userList
+
+    def sampleParticipants(self, num_available, userList):
         sampledParticipants = []
         #Cases needed here, depending on how many users are available. 
         #If there is not a single user to invite, send back False to give an HTTP error message code.
@@ -219,27 +228,20 @@ class SuperflySessionEndpoint(APIView):
             sampledParticipants = random.sample(userList, num_available)
         return sampledParticipants
 
-    def getAvailable(self, new_session):
-        #This id excludes default superusers.
-        default_uid = 2147483648
-        #First grab 4 other users, don't need to consider host as he is already in the new session.
-        userList = list(UserInfo.objects.filter(user_id__lt=default_uid, user_superflysession_id=-1))   
-
-        #Check to see if we couldn't sample anyone. 
-        return userList
+    
 
     def inviteParticipants(self, available_participants, new_session):
         #Otherwise get
         num_available = len(available_participants)
-        sampledParticipants = self.getParticipants(num_available, available_participants)
+        sampledParticipants = self.sampleParticipants(num_available, available_participants)
         print("Chosen participants: ", sampledParticipants)
         
         #Now we know how many people to invite, send them. TODO: Race condition between clients?
         for i in range(0, num_available):
-            print(i)
+            print(sampledParticipants[i].user_superflysession_id)
             #Invite four participants by creating invite objects linking them to this session.
             #Only invite if we haven't already or they deleted it.
-            curr_invite = SuperflyInvite(session=new_session, recipient=sampledParticipants[i])
+            curr_invite = SuperflyInvite(session=new_session, recipient=sampledParticipants[i], uid_recipiant = sampledParticipants[i].user_id)
             curr_invite.save()
         #Return True after we send the invites sucessfully
         return True
@@ -263,20 +265,37 @@ class SuperflySessionEndpoint(APIView):
             new_session = SuperflySession()
             new_session = serializer.save()
 
-            # We posted a session, so let's see if anyone is available to invite
-            availableParticipants = self.getAvailable(new_session)
-            if(len(availableParticipants) == 0):
-                return Response({"error": serializer.errors}, status=status.HTTP_409_CONFLICT)
+            
             
             #Get the record for the participant id that created the session. 
-            new_session.participant_0 = list(UserInfo.objects.filter(user_id=new_session.id_0))[0]
+            
+            participant_0 = UserInfo.objects.get(user_id = new_session.id_0) 
+            
+            #list(UserInfo.objects.filter(user_id=new_session.id_0))[0]
+            participant_0.user_superflysession_id = new_session.session_id
+            
             #Sets the userinfo model id
-            new_session.participant_0.user_superflysession_id = new_session.session_id
-            new_session.participant_0.user_superflysession_obj = new_session
+            #participant_0.user_superflysession_id = new_session.session_id
             #Save here to update the UserInfo model pointed at from participant_0
-            new_session.participant_0.save()
+            #participant_0.save()
+            print("Saving model" + str(participant_0.user_superflysession_id))
+            new_session.participant_0 = participant_0
+            #Save the participant_0 record to show they are trying to make a new session
+                #We need to save here so getAvailable does not try to invite this user to their own session..
+            participant_0.save()
 
-            #NOW invite people
+            # We posted a session, so let's see if anyone is available to invite
+            availableParticipants = self.getAvailable(new_session)
+
+            #If this is true then we have no other players available, cancel the session and do not save the updated userinfo object!
+            if(len(availableParticipants) == 0):
+                #We need to undo the changes we made with another save as this session is not valid.
+                participant_0.user_superflysession_id = 0
+                participant_0.save()
+                #Send the user an error to show we have no participants ready. 
+                return Response({"error": serializer.errors}, status=status.HTTP_409_CONFLICT)
+
+            #NOW invite other players
             self.inviteParticipants(availableParticipants, new_session)
 
 
@@ -302,15 +321,9 @@ class SuperflyInviteEndpoint(APIView):
     #Used to get all invites for the inputted userid. 
     def get(self, request, input_id):
         try:
-            invite_qs = SuperflyInvite.objects.filter(invite_id=input_id)
+            invite_qs = SuperflyInvite.objects.filter(recipent=input_id)
             serializer = SuperflyInviteSerializer(invite_qs, many=True)
             return Response(serializer.data)
         except SuperflyInvite.DoesNotExist:
             return Response({"error": "No invites present for this user"}, status=status.HTTP_404_NOT_FOUND)
-
-
-         
-
-    
-
     

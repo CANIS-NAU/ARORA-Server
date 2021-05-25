@@ -7,7 +7,7 @@ from .models import UserInfo
 # Create UserInfoAdmin for UserInfo model.
 class UserInfoAdmin(admin.ModelAdmin):
 	#  Set attributes to be displayed
-        list_display = ['username','user_id','user_pollen'] 
+        list_display = ['username','user_id','user_pollen', 'user_superflysession_id'] 
 	# For more information, https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 
 # let our admin-site know the new member coming
