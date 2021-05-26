@@ -305,23 +305,59 @@ class SuperflySessionEndpoint(APIView):
         print("Serializer not is valid")
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
-    def verify_participants(self, current_session):
-        print(current_session.id_1)
+    #If we are patching a new user in, figure out which slot to put them in. 
+    def verify_participants(self, current_session, new_participant_slot):
+        if new_participant_slot == "id_0":
+            current_session.participant_0 = UserInfo.objects.get(user_id=current_session.id_0)
+            current_session.session_participant_count += 1
+            #Update the UserInfo record to tie them to this session. 
+            current_session.participant_0.user_superflysession_id = current_session.session_id
+            current_session.participant_0.save()
+            self.delete_invite(current_session, current_session.participant_0)
 
-    def put(self, request, input_session_id):
-        try:
-            updated_session = SuperflySession.objects.get(session_id=input_session_id)
-        except UserInteraction.DoesNotExist:
-            return Response({"error": "UserInteraction does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        elif new_participant_slot == "id_1":
+            current_session.participant_1 = UserInfo.objects.get(user_id=current_session.id_1)
+            current_session.session_participant_count += 1
+            #Update the UserInfo record to tie them to this session. 
+            current_session.participant_1.user_superflysession_id = current_session.session_id
+            current_session.participant_1.save()
+            self.delete_invite(current_session, current_session.participant_1)
 
-        serializer = SuperflySessionSerializer(updated_session, data=request.data)
-        if serializer.is_valid():
-            updated_session = serializer.save()
-            return Response({"user_interaction_id": updated_session.user_interaction_id},
-                            status=status.HTTP_200_OK)
-        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        elif new_participant_slot == "id_2":
+            current_session.participant_2 = UserInfo.objects.get(user_id=current_session.id_2)
+            current_session.session_participant_count += 1
+            current_session.participant_2.user_superflysession_id = current_session.session_id
+            current_session.participant_2.save()
+            self.delete_invite(current_session, current_session.participant_2)
+
+        elif new_participant_slot == "id_3":
+            current_session.participant_3 = UserInfo.objects.get(user_id=current_session.id_3)
+            current_session.session_participant_count += 1
+            current_session.participant_3.user_superflysession_id = current_session.session_id
+            current_session.participant_3.save()
+            self.delete_invite(current_session, current_session.participant_3)
+
+        elif new_participant_slot == "id_4":
+            current_session.participant_4 = UserInfo.objects.get(user_id=current_session.id_4)
+            current_session.session_participant_count += 1
+            current_session.participant_4.user_superflysession_id = current_session.session_id
+            current_session.participant_4.save()
+            self.delete_invite(current_session, current_session.participant_4)
+
+        else:
+            print("Session full")
+        current_session.save()
+        
+    def delete_invite(self, session, participant):
+        SuperflyInvite.objects.filter(session=session, recipient=participant).delete()
+    
 
     def patch(self, request, session_id):
+        #Grab the first key to see if we are adding a participant or updating count values. 
+        first_key = ""
+        first_key = list(request.data.keys())[0]
+        print(first_key)
+        
         #Get a session to update, if it exists. 
         try:
             updated_session = SuperflySession.objects.get(session_id=session_id) 
@@ -334,13 +370,28 @@ class SuperflySessionEndpoint(APIView):
         if serializer.is_valid():
             updated_session = serializer.save()
             #Found the session, so let's update it TODO.
-            self.verify_participants(updated_session)
+            if(first_key.startswith("id")):
+                print("PATCHING a new user")
+                self.verify_participants(updated_session, first_key)
+                #Delete the invite
+
             
             return Response({"participant_1_id": updated_session.id_1},
                             status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         
+    def put(self, request, input_session_id):
+        try:
+            updated_session = SuperflySession.objects.get(session_id=input_session_id)
+        except UserInteraction.DoesNotExist:
+            return Response({"error": "UserInteraction does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
+        serializer = SuperflySessionSerializer(updated_session, data=request.data)
+        if serializer.is_valid():
+            updated_session = serializer.save()
+            return Response({"user_interaction_id": updated_session.user_interaction_id},
+                            status=status.HTTP_200_OK)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class SuperflyInviteEndpoint(APIView):
     #Used to get all invites for the inputted userid. 
