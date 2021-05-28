@@ -65,6 +65,12 @@ class SuperflySession(models.Model):
     participant_3 = models.ForeignKey(UserInfo, db_column="Participant3", related_name="participant_3", null=True, blank=True, on_delete=models.CASCADE)
     participant_4 = models.ForeignKey(UserInfo, db_column="Participant4", related_name="participant_4", null=True, blank=True, on_delete=models.CASCADE)
     superfly_recipe = models.ForeignKey(Superfly, default = 1, blank=True, on_delete=models.CASCADE)
+    #Next butterfly for each user to contribute corresponding with the 0 - 4 naming of each butterfly count
+    butterfly_participant_0 = models.IntegerField(default=-1, db_column="NextButterfly0") #Next butterfly type for participant 0 to contribute
+    butterfly_participant_1 = models.IntegerField(default=-1, db_column="NextButterfly1") #Next butterfly type for participant 0 to contribute
+    butterfly_participant_2 = models.IntegerField(default=-1, db_column="NextButterfly2") #Next butterfly type for participant 0 to contribute
+    butterfly_participant_3 = models.IntegerField(default=-1, db_column="NextButterfly3") #Next butterfly type for participant 0 to contribute
+    butterfly_participant_4 = models.IntegerField(default=-1, db_column="NextButterfly4") #Next butterfly type for participant 0 to contribute
     #CurrentCounts: Current amount of butterflies contributed in this session.
     current_b0_count = models.IntegerField(default=0, db_column="CurrentB0Count")
     current_b1_count = models.IntegerField(default=0, db_column="CurrentB1Count")

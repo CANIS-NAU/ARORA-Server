@@ -27,8 +27,12 @@ class UserInfo(AbstractUser):
     user_b3_count = models.IntegerField(default=0, db_column="UserB3Count") # Green    
     user_b4_count = models.IntegerField(default=0, db_column="UserB4Count") # Blue   
     
+    
+    #Superfly game fields
     #Id of any superfly session the user is in currently. -1 if they are not in one. 
-    user_superflysession_id = models.IntegerField(default=-1, db_column='SuperflySessionId')  
+    user_superflysession_id = models.IntegerField(default=-1, db_column='SuperflySessionId')
+    #The butterfly color that the user has staged to add.
+    user_staged_butterfly = models.IntegerField(default=-1, db_column='UserStagedButterfly')  
 
     email = models.EmailField(unique=True)
     REQUIRED_FIELDS = ['email']#, 'user_name']

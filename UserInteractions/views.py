@@ -349,8 +349,34 @@ class SuperflySessionEndpoint(APIView):
         current_session.save()
         
     def delete_invite(self, session, participant):
-        SuperflyInvite.objects.filter(session=session, recipient=participant).delete()
+        testing = False
+        if(not testing):
+            SuperflyInvite.objects.filter(session=session, recipient=participant).delete()
+
+
+    def handle_progress(self, session):
+        print("Doing after PATCH")
     
+    def assign_butterflies(self, session):
+        print("Assigning butterflies to Users in session")
+        participant_count = session.session_participant_count
+        print(participant_count)
+        print(session.superfly_recipe)
+
+        butterflies_needed_dict = {0: (session.superfly_recipe.b0_count - session.current_b0_count), 
+        1: (session.superfly_recipe.b1_count - session.current_b1_count), 
+        2: (session.superfly_recipe.b2_count - session.current_b2_count), 
+        3: (session.superfly_recipe.b3_count - session.current_b3_count), 
+        4: (session.superfly_recipe.b4_count - session.current_b4_count)}
+
+        butterfly_types = []
+        print(butterflies_needed_dict)
+        #While we still have room to sample
+        for i in range(0,5):
+            if(butterflies_needed_dict.get(i) > 0):
+                butterfly_types.append(i)
+        print(butterfly_types)
+
 
     def patch(self, request, session_id):
         #Grab the first key to see if we are adding a participant or updating count values. 
@@ -369,12 +395,16 @@ class SuperflySessionEndpoint(APIView):
     
         if serializer.is_valid():
             updated_session = serializer.save()
-            #Found the session, so let's update it TODO.
+            #Case for a new user's request to join the session
             if(first_key.startswith("id")):
                 print("PATCHING a new user")
                 self.verify_participants(updated_session, first_key)
-                #Delete the invite
-
+            #Case when participant_0 starts the session.
+            elif(first_key.startswith("session_started")):
+                self.assign_butterflies(updated_session)
+            #Case to update the progress of the superfly
+            elif(first_key.startswith("current")):
+                self.handle_progress()
             
             return Response({"participant_1_id": updated_session.id_1},
                             status=status.HTTP_200_OK)
