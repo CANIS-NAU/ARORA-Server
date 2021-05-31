@@ -357,11 +357,40 @@ class SuperflySessionEndpoint(APIView):
     def handle_progress(self, session):
         print("Doing after PATCH")
     
+    def get_types_needed(self, needed_dict):
+        butterfly_types_needed = []
+        #While we still have room to sample
+        for i in range(0,5):
+            if(needed_dict.get(i) > 0):
+                butterfly_types_needed.append(i)
+        print(butterfly_types_needed)
+        return butterfly_types_needed
+
+    def set_butterfly_assignment(self, session, participant_num, butterfly_type):
+        if participant_num == 0:
+            session.butterfly_participant_0 = butterfly_type
+        elif participant_num == 1:
+            session.butterfly_participant_1 = butterfly_type
+        elif participant_num == 2:
+            session.butterfly_participant_2 = butterfly_type
+        elif participant_num == 3:
+            session.butterfly_participant_3 = butterfly_type
+        elif participant_num == 4:
+            session.butterfly_participant_4 = butterfly_type
+        else:
+            print("Invalid participant number attempted butterfly assignment")   
+        
     def assign_butterflies(self, session):
         print("Assigning butterflies to Users in session")
         participant_count = session.session_participant_count
         print(participant_count)
         print(session.superfly_recipe)
+
+        participants = [session.participant_0, session.participant_1, session.participant_2, session.participant_3, session.participant_4]
+        
+        assigned_butterflies = [session.butterfly_participant_0, 
+            session.butterfly_participant_1, session.butterfly_participant_2, 
+            session.butterfly_participant_3, session.butterfly_participant_4]
 
         butterflies_needed_dict = {0: (session.superfly_recipe.b0_count - session.current_b0_count), 
         1: (session.superfly_recipe.b1_count - session.current_b1_count), 
@@ -369,14 +398,23 @@ class SuperflySessionEndpoint(APIView):
         3: (session.superfly_recipe.b3_count - session.current_b3_count), 
         4: (session.superfly_recipe.b4_count - session.current_b4_count)}
 
-        butterfly_types = []
-        print(butterflies_needed_dict)
-        #While we still have room to sample
-        for i in range(0,5):
-            if(butterflies_needed_dict.get(i) > 0):
-                butterfly_types.append(i)
-        print(butterfly_types)
+        butterfly_types_needed = self.get_types_needed(butterflies_needed_dict)
+        
 
+        #Now we have a list of types to pull from, sample them and decrement dict val. 
+        #Check to see if we have one of that type to pull
+        #If there is only one left, assign it and then remove it from the options. 
+        for j in range(0,participant_count):
+            curr_assignment = participants[j]
+            rand_index = random.randint(0, len(butterfly_types_needed)-1)
+            selected_butterfly = butterfly_types_needed[rand_index]
+            self.set_butterfly_assignment(session, j, selected_butterfly)
+            print(session.butterfly_participant_0)
+            print(session.butterfly_participant_1)
+            print(session.butterfly_participant_2)
+
+            #if()
+        session.save()
 
     def patch(self, request, session_id):
         #Grab the first key to see if we are adding a participant or updating count values. 
@@ -395,6 +433,7 @@ class SuperflySessionEndpoint(APIView):
     
         if serializer.is_valid():
             updated_session = serializer.save()
+            #CASES for firstkey allow us to figure out how to respond to the request.
             #Case for a new user's request to join the session
             if(first_key.startswith("id")):
                 print("PATCHING a new user")
