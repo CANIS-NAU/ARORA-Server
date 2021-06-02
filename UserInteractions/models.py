@@ -96,4 +96,20 @@ class SuperflyInvite(models.Model):
     accepted = models.BooleanField(default=False)
 
 
+class TradeRequest(models.Model):
+    request_id = models.AutoField(primary_key=True, db_column="TradeId")
+    uid_sender = models.IntegerField(default = -1, db_column="SenderId")
+    uid_recipient = models.IntegerField(default=-1, db_column="RecipientId")
+    sender = models.ForeignKey(UserInfo,db_column="SenderObj", null=True, blank = True, on_delete=models.CASCADE, related_name="sender")
+    recipient = models.ForeignKey(UserInfo,db_column="Recipient", null=True, blank = True, on_delete=models.CASCADE)
+    accepted = models.BooleanField(default=False, db_column="AcceptedTrade")
+    b0_requested = models.IntegerField(default=0, db_column="B0Requested")
+    b1_requested = models.IntegerField(default=0, db_column="B1Requested")
+    b2_requested = models.IntegerField(default=0, db_column="B2Requested")
+    b3_requested = models.IntegerField(default=0, db_column="B3Requested")
+    b4_requested = models.IntegerField(default=0, db_column="B4Requested")
+
+
+
+
     

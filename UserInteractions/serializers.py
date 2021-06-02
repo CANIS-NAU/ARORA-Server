@@ -39,3 +39,10 @@ class SuperflyInviteSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = models.SuperflyInvite
+
+class TradeRequestSerializer(serializers.ModelSerializer):
+    sender = UserInfoSerializer(required=False)
+    recipient = UserInfoSerializer(required=False)
+    class Meta:
+        fields = '__all__'
+        model = models.TradeRequest
