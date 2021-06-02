@@ -23,6 +23,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
             'user_b4_count',
             'user_staged_butterfly',
             'user_superflysession_id',
+            'user_current_round',
             'user_pollen')
         model = models.UserInfo
 

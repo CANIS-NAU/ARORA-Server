@@ -23,7 +23,7 @@ class UserInfo(AbstractUser):
     #These counts are used to display in the atrium and create superflies in the superfly multiplayer game. 
     user_b0_count = models.IntegerField(default=0, db_column="UserB0Count") # Red
     user_b1_count = models.IntegerField(default=0, db_column="UserB1Count") # Yellow   
-    user_b2_count = models.IntegerField(default=0, db_column="UserB2Count") # Orange   
+    user_b2_count = models.IntegerField(default=0, db_column="UserB2Count") # Violet   
     user_b3_count = models.IntegerField(default=0, db_column="UserB3Count") # Green    
     user_b4_count = models.IntegerField(default=0, db_column="UserB4Count") # Blue   
     
@@ -32,7 +32,9 @@ class UserInfo(AbstractUser):
     #Id of any superfly session the user is in currently. -1 if they are not in one. 
     user_superflysession_id = models.IntegerField(default=-1, db_column='SuperflySessionId')
     #The butterfly color that the user has staged to add.
-    user_staged_butterfly = models.IntegerField(default=-1, db_column='UserStagedButterfly')  
+    user_staged_butterfly = models.IntegerField(default=-1, db_column='UserStagedButterfly')
+    #The round the user previously contributed to, in case of network failure we can use this to verify if they already finished the round or not 
+    user_current_round = models.IntegerField(default=0, db_column='CurrentRound') 
 
     email = models.EmailField(unique=True)
     REQUIRED_FIELDS = ['email']#, 'user_name']

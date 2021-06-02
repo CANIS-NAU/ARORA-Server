@@ -52,6 +52,7 @@ class SuperflySession(models.Model):
     session_start_date = models.DateTimeField(auto_now = True, db_column="SessionStartDate")
     session_participant_count = models.IntegerField(default=1, db_column="ParticipantCount") # How many users are in the session
     session_started = models.BooleanField(default=False) #Has the game started with enough participants?
+    session_ended = models.BooleanField(default=False)
     #user_ids for each participant in the session
     id_0 = models.IntegerField(default=-1, db_column = "P0Id")
     id_1 = models.IntegerField(default=-1, db_column = "P1Id")
@@ -80,11 +81,11 @@ class SuperflySession(models.Model):
 
     #Checks to see if the counts of b0-b4 are sufficient to create the superfly.
     def completedSuperfly(self):
-        return (current_b0_count >= superfly_recipe.b0_count_needed 
-        and current_b1_count >= superfly_recipe.b1_count_needed 
-        and current_b2_count >= superfly_recipe.b2_count_needed 
-        and current_b3_count >= superfly_recipe.b3_count_needed 
-        and current_b4_count >= superfly_recipe.b4_count_needed)
+        return (self.current_b0_count >= self.superfly_recipe.b0_count 
+        and self.current_b1_count >= self.superfly_recipe.b1_count 
+        and self.current_b2_count >= self.superfly_recipe.b2_count 
+        and self.current_b3_count >= self.superfly_recipe.b3_count 
+        and self.current_b4_count >= self.superfly_recipe.b4_count)
 
 #Invite object that the user can accept or decline to join a session.
 class SuperflyInvite(models.Model):

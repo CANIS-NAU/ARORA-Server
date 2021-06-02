@@ -355,7 +355,17 @@ class SuperflySessionEndpoint(APIView):
 
 
     def handle_progress(self, session):
-        print("Doing after PATCH")
+        #If we completed the superfly, GAME IS OVER
+        #Mark the game as over and save the session. 
+            #It will need to be deleted later. 
+        if session.completedSuperfly():
+            session.session_ended = True
+            session.save()
+        #Otherwise assign new butterflies until we finish.
+        else:
+            print("Game is not over, assigning more butterflies.")
+            self.assign_butterflies(session)
+
     
     def get_types_needed(self, needed_dict):
         butterfly_types_needed = []
@@ -385,8 +395,6 @@ class SuperflySessionEndpoint(APIView):
         participant_count = session.session_participant_count
         print(participant_count)
         print(session.superfly_recipe)
-
-        participants = [session.participant_0, session.participant_1, session.participant_2, session.participant_3, session.participant_4]
         
         assigned_butterflies = [session.butterfly_participant_0, 
             session.butterfly_participant_1, session.butterfly_participant_2, 
@@ -405,15 +413,23 @@ class SuperflySessionEndpoint(APIView):
         #Check to see if we have one of that type to pull
         #If there is only one left, assign it and then remove it from the options. 
         for j in range(0,participant_count):
-            curr_assignment = participants[j]
-            rand_index = random.randint(0, len(butterfly_types_needed)-1)
-            selected_butterfly = butterfly_types_needed[rand_index]
+            if(len(butterfly_types_needed) == 0):
+                selected_butterfly = 0
+            else:
+                rand_index = random.randint(0, len(butterfly_types_needed)-1)
+                selected_butterfly = butterfly_types_needed[rand_index]
             self.set_butterfly_assignment(session, j, selected_butterfly)
-            print(session.butterfly_participant_0)
-            print(session.butterfly_participant_1)
-            print(session.butterfly_participant_2)
+            
+            number_needed = butterflies_needed_dict.get(selected_butterfly)
+            if(butterflies_needed_dict.get(selected_butterfly) == 1):
+                butterfly_types_needed.remove(selected_butterfly)
+            number_needed -= 1
+            updated_entry = {selected_butterfly: number_needed}
+            butterflies_needed_dict.update(updated_entry)
+            print("Types left to select", butterfly_types_needed)
 
-            #if()
+        print("Participant 0 assigned: ", session.butterfly_participant_0)
+        print("Participant 1 assigned: ", session.butterfly_participant_1)
         session.save()
 
     def patch(self, request, session_id):
@@ -443,9 +459,9 @@ class SuperflySessionEndpoint(APIView):
                 self.assign_butterflies(updated_session)
             #Case to update the progress of the superfly
             elif(first_key.startswith("current")):
-                self.handle_progress()
-            
-            return Response({"participant_1_id": updated_session.id_1},
+                self.handle_progress(updated_session)
+            #Return the updated session back.
+            return Response(serializer.data,
                             status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         
