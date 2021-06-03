@@ -1,6 +1,6 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import ButterflyAtrium
+from .models import UserSuperfly
 
-admin.site.register(ButterflyAtrium)
+admin.site.register(UserSuperfly)

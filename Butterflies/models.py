@@ -1,7 +1,6 @@
 from django.db import models
 from UserInfos.models import UserInfo
 from Quests.models import QuestReport
-from ButterflyAtriums.models import ButterflyAtrium
 # Create your models here.
 
 
@@ -39,9 +38,6 @@ class Superfly(models.Model):
     b3_count = models.IntegerField(db_column='B3Count', default = 1) 
     b4_count = models.IntegerField(db_column='B4Count', default = 1)
 
-class UserSuperflies(models.Model):
-    superfly = models.ForeignKey(Superfly, on_delete=models.CASCADE, db_column='Superfly')
-    user_id = models.ForeignKey(UserInfo, on_delete=models.CASCADE, db_column='User')
 
 class UserButterfly(models.Model):
     user_butterfly_id = models.AutoField(primary_key=True, db_column='UserButterflyId')  # Primary Key

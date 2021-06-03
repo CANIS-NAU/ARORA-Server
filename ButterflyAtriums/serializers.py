@@ -3,10 +3,10 @@ from rest_framework import serializers
 from . import models
 
 
-class ButterflyAtriumSerializer(serializers.ModelSerializer):
+class UserSuperflySerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
 
-        model = models.ButterflyAtrium
+        model = models.UserSuperfly
 
 

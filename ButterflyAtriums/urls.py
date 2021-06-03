@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('butterflyatrium/<int:butterfly_atrium_id>', views.ButterflyAtriumEndPoint.as_view()),
-    path('butterflyatrium/<int:butterfly_atrium_user_id>', views.ButterflyAtriumEndPointByUserId.as_view()),
+    path('usersuperfly/', views.UserSuperflyEndPoint.as_view()),
+    path('usersuperfly/<int:user_id>', views.UserSuperflyEndPoint.as_view()),
 
 ]

@@ -496,23 +496,20 @@ class TradeRequestEndPoint(APIView):
         try:
             trades_qs = TradeRequest.objects.filter(user_interaction_id=user_interaction_id)
             print(list(trades_qs))
-            serializer = TradeRequestSerializer(query)
+            serializer = TradeRequestSerializer(trades_qs, many=True)
             return Response(serializer.data)
-        except UserInteraction.DoesNotExist:
+        except TradeRequest.DoesNotExist:
             return Response({"error": "UserInteraction does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
         serializer = TradeRequestSerializer(data=request.data)
         print("Posted new trade request")
         if serializer.is_valid():
-            print("SERIALIZER VALID")
             new_trade = TradeRequest()
             new_trade = serializer.save()
-            print(new_trade)
             new_trade.sender = UserInfo.objects.get(user_id=new_trade.uid_sender)
             new_trade.recipient = UserInfo.objects.get(user_id=new_trade.uid_recipient)
             new_trade.save()
-            print("DONT GET HERE?")
             # Who needs to know about which user interactions?
             # Liking and comments should just between receiver and initiator
             # TODO make a notification that corresponds 

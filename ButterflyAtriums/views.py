@@ -8,58 +8,51 @@ from .serializers import *
 
 
 
-class ButterflyAtriumEndPoint(APIView):
+class UserSuperflyEndPoint(APIView):
 
-    def get(self, request, butterfly_atrium_id):
+    def get(self, request, user_id):
         try:
-            query = ButterflyAtrium.objects.get(butterfly_atrium_id=butterfly_atrium_id)
-            serializer = ButterflyAtriumSerializer(query)
+            superflies_qs = UserSuperfly.objects.filter(id_user=user_id)
+            print(list(superflies_qs))
+            serializer = UserSuperflySerializer(superflies_qs, many=True)
             return Response(serializer.data)
-        except ButterflyAtrium.DoesNotExist:
-            return Response({"error": "User butterfly atrium does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        except UserSuperfly.DoesNotExist:
+            return Response({"error": "UserInteraction does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
-        serializer = ButterflyAtriumSerializer(data=request.data)
+        serializer = TradeRequestSerializer(data=request.data)
+        print("Posted new trade request")
         if serializer.is_valid():
-            new_butterfly_atrium = serializer.save()
-            return Response({"butterfly_atrium_id": new_butterfly_atrium.butterfly_atrium_id}, status=status.HTTP_200_OK)
+            new_trade = TradeRequest()
+            new_trade = serializer.save()
+            new_trade.sender = UserInfo.objects.get(user_id=new_trade.uid_sender)
+            new_trade.recipient = UserInfo.objects.get(user_id=new_trade.uid_recipient)
+            new_trade.save()
+            # Who needs to know about which user interactions?
+            # Liking and comments should just between receiver and initiator
+            # TODO make a notification that corresponds 
+            return Response(serializer.data,
+                            status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, butterfly_atrium_id):
+    """def patch(self, request, user_interaction_id):
         try:
-            update_butterfly_atrium = ButterflyAtrium.objects.get(butterfly_atrium_id=butterfly_atrium_id)
-        except ButterflyAtrium.DoesNotExist:
-            return Response({"error": "Butterfly atrium does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            updated_quest = UserInteraction.objects.get(user_interaction_id=user_interaction_id)
+        except UserInteraction.DoesNotExist:
+            return Response({"error": "UserInteraction does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        '''This code chunk uses to check if the request is form the user who creates this item'''
-        # if update_user_butterfly.UserId != request.user:
-        #     return Response({"error": "Permission denied"}, status=status.HTTP_401_UNAUTHORIZED)
-        '''code chunk ends'''
-
-        serializer = ButterflyAtriumSerializer(update_butterfly_atrium, data=request.data)
+        serializer = UserInteractionSerializer(updated_quest, data=request.data, partial=True)
         if serializer.is_valid():
-            update_butterfly_atrium = serializer.save()
-            return Response({"butterfly_atrium_id": update_butterfly_atrium.butterfly_atrium_id}, status=status.HTTP_200_OK)
+            updated_quest = serializer.save()
+            return Response({"user_interaction_id": updated_quest.user_interaction_id},
+                            status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, butterfly_atrium_id):
-        try:
-            delete_butterfly_atrium = ButterflyAtrium.objects.get(butterfly_atrium_id=butterfly_atrium_id)
-            # if delete_user_butterfly.UserId.UserId != request.user.UserId:
-            #     return Response({"error": "Permission denied"}, status=status.HTTP_401_UNAUTHORIZED)
-            delete_butterfly_atrium.delete()
-            return Response({}, status=status.HTTP_200_OK)
-        except UserButterfly.DoesNotExist:
-            return Response({"error": "User butterfly atrium does not exist"}, status=status.HTTP_404_NOT_FOUND)
-
-
-class ButterflyAtriumEndPointByUserId(APIView):
-
-    def get(self, request, butterfly_atrium_user_id):
-        try:
-            query = ButterflyAtrium.objects.get(butterfly_atrium_user_id=butterfly_atrium_user_id)
-            serializer = ButterflyAtriumSerializer(query)
-            return Response(serializer.data)
-        except ButterflyAtrium.DoesNotExist:
-            return Response({"error": "User butterfly atrium does not exist"}, status=status.HTTP_404_NOT_FOUND)
+    # TODO add delete
+    def delete(self, request, user_interaction_id):
+            delete_user_interaction = UserInteraction.objects.get(user_interaction_id=user_interaction_id)
+            if delete_user_interaction.UserId.UserId != request.user.UserId:
+                return Response({"error": "Permission denied"}, status=status.HTTP_401_UNAUTHORIZED)
+            delete_user_interaction.delete()
+            return Response({}, status=status.HTTP_200_OK)"""
 
