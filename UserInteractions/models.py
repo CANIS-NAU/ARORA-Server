@@ -93,6 +93,7 @@ class SuperflyInvite(models.Model):
     session = models.ForeignKey(SuperflySession, db_column="Session", on_delete=models.CASCADE)
     recipient = models.ForeignKey(UserInfo, db_column="Recipient", on_delete=models.CASCADE)
     uid_recipient = models.IntegerField(default = -1, db_column="RecipientId")
+    uid_sender = models.IntegerField(default = -1, db_column="SenderId")
     accepted = models.BooleanField(default=False)
 
 

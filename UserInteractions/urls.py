@@ -28,6 +28,11 @@ urlpatterns = [
 
     #Paths to manage superfly trading requests
     path('traderequest', views.TradeRequestEndPoint.as_view()),
-    path('traderequest/<int:uid_recipient>', views.TradeRequestEndPoint.as_view())
+    path('traderequest/<int:uid_recipient>', views.TradeRequestEndPoint.as_view()),
+
+
+
+    
+
 
 ]    

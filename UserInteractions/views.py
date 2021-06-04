@@ -201,6 +201,16 @@ class UserInteractionsEndPointByQuestReportId(APIView):
         
 # TODO: SuperFly session object to be created (POST), viewed (GET), and added to (PATCH)
 class SuperflySessionEndpoint(APIView):
+    def get(self, request, session_id):
+        try:
+            #Possible refactor to eliminate explicitly defined primary keys, as Django can autopopluate them for us. 
+            sessionqs = SuperflySession.objects.get(session_id=session_id)
+            serializer = SuperflySessionSerializer(sessionqs)
+            return Response(serializer.data)
+        except SuperflySession.DoesNotExist:
+            return Response({"error": "UserInteractionType does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
     def getRandomRecipe(self):
         recipeList = list(Superfly.objects.all())
         recipeIndex = random.randint(0, len(recipeList) - 1)
@@ -242,19 +252,12 @@ class SuperflySessionEndpoint(APIView):
             print(sampledParticipants[i].user_superflysession_id)
             #Invite four participants by creating invite objects linking them to this session.
             #Only invite if we haven't already or they deleted it.
-            curr_invite = SuperflyInvite(session=new_session, recipient=sampledParticipants[i], uid_recipient = sampledParticipants[i].user_id)
+            curr_invite = SuperflyInvite(session=new_session, recipient=sampledParticipants[i], uid_recipient = sampledParticipants[i].user_id, uid_sender=new_session.id_0)
             curr_invite.save()
         #Return True after we send the invites sucessfully
         return True
 
-    def get(self, request, session_id):
-        try:
-            #Possible refactor to eliminate explicitly defined primary keys, as Django can autopopluate them for us. 
-            sessionqs = SuperflySession.objects.get(session_id=session_id)
-            serializer = SuperflySessionSerializer(sessionqs)
-            return Response(serializer.data)
-        except SuperflySession.DoesNotExist:
-            return Response({"error": "UserInteractionType does not exist"}, status=status.HTTP_404_NOT_FOUND)
+    
 
     def post(self, request):
         serializer = SuperflySessionSerializer(data=request.data)
@@ -308,16 +311,21 @@ class SuperflySessionEndpoint(APIView):
     
     #If we are patching a new user in, figure out which slot to put them in. 
     def verify_participants(self, current_session, new_participant_slot):
+        new_participant = ""
         if new_participant_slot == "id_0":
-            current_session.participant_0 = UserInfo.objects.get(user_id=current_session.id_0)
+            new_participant = UserInfo.objects.get(user_id=current_session.id_0)
+            current_session.participant_0 = new_participant
             current_session.session_participant_count += 1
             #Update the UserInfo record to tie them to this session. 
             current_session.participant_0.user_superflysession_id = current_session.session_id
             current_session.participant_0.save()
             self.delete_invite(current_session, current_session.participant_0)
+            #Delete this user's session invites when they join a new session
+            
 
         elif new_participant_slot == "id_1":
-            current_session.participant_1 = UserInfo.objects.get(user_id=current_session.id_1)
+            new_participant = UserInfo.objects.get(user_id=current_session.id_1)
+            current_session.participant_1 = new_participant
             current_session.session_participant_count += 1
             #Update the UserInfo record to tie them to this session. 
             current_session.participant_1.user_superflysession_id = current_session.session_id
@@ -325,21 +333,24 @@ class SuperflySessionEndpoint(APIView):
             self.delete_invite(current_session, current_session.participant_1)
 
         elif new_participant_slot == "id_2":
-            current_session.participant_2 = UserInfo.objects.get(user_id=current_session.id_2)
+            new_participant = UserInfo.objects.get(user_id=current_session.id_2)
+            current_session.participant_2 = new_participant
             current_session.session_participant_count += 1
             current_session.participant_2.user_superflysession_id = current_session.session_id
             current_session.participant_2.save()
             self.delete_invite(current_session, current_session.participant_2)
 
         elif new_participant_slot == "id_3":
-            current_session.participant_3 = UserInfo.objects.get(user_id=current_session.id_3)
+            new_participant = UserInfo.objects.get(user_id=current_session.id_3)
+            current_session.participant_3 = new_participant
             current_session.session_participant_count += 1
             current_session.participant_3.user_superflysession_id = current_session.session_id
             current_session.participant_3.save()
             self.delete_invite(current_session, current_session.participant_3)
 
         elif new_participant_slot == "id_4":
-            current_session.participant_4 = UserInfo.objects.get(user_id=current_session.id_4)
+            new_participant = UserInfo.objects.get(user_id=current_session.id_4)
+            current_session.participant_4 = new_participant
             current_session.session_participant_count += 1
             current_session.participant_4.user_superflysession_id = current_session.session_id
             current_session.participant_4.save()
@@ -347,6 +358,9 @@ class SuperflySessionEndpoint(APIView):
 
         else:
             print("Session full")
+
+        #Delete this user's session invites when they join a new session
+        SuperflyInvite.objects.filter(uid_sender=new_participant.user_id).delete()
         current_session.save()
         
     def delete_invite(self, session, participant):
@@ -438,6 +452,7 @@ class SuperflySessionEndpoint(APIView):
         first_key = ""
         first_key = list(request.data.keys())[0]
         print(first_key)
+    
         
         #Get a session to update, if it exists. 
         try:
@@ -455,6 +470,7 @@ class SuperflySessionEndpoint(APIView):
             if(first_key.startswith("id")):
                 print("PATCHING a new user")
                 self.verify_participants(updated_session, first_key)
+                
             #Case when participant_0 starts the session.
             elif(first_key.startswith("session_started")):
                 self.assign_butterflies(updated_session)
@@ -490,6 +506,15 @@ class SuperflyInviteEndpoint(APIView):
             return Response(serializer.data)
         except SuperflyInvite.DoesNotExist:
             return Response({"error": "No invites present for this user"}, status=status.HTTP_404_NOT_FOUND)
+
+     # TODO add delete
+    def delete(self, request, uid_recipient):
+            try:
+                delete_invites = SuperflyInvite.objects.filter(uid_recipient=uid_recipient)
+                delete_invites.delete()
+                return Response({"Deleted invites succesfully!"}, status=status.HTTP_200_OK)
+            except TradeRequest.DoesNotExist:
+                return Response({"error": "No Invites found."}, status=status.HTTP_404_NOT_FOUND)
     
 class TradeRequestEndPoint(APIView):
 
@@ -529,12 +554,13 @@ class TradeRequestEndPoint(APIView):
             updated_quest = serializer.save()
             return Response({"user_interaction_id": updated_quest.user_interaction_id},
                             status=status.HTTP_200_OK)
-        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)"""
 
     # TODO add delete
-    def delete(self, request, user_interaction_id):
-            delete_user_interaction = UserInteraction.objects.get(user_interaction_id=user_interaction_id)
-            if delete_user_interaction.UserId.UserId != request.user.UserId:
-                return Response({"error": "Permission denied"}, status=status.HTTP_401_UNAUTHORIZED)
-            delete_user_interaction.delete()
-            return Response({}, status=status.HTTP_200_OK)"""
+    def delete(self, request, uid_recipient):
+            try:
+                delete_trade_request = TradeRequest.objects.filter(uid_recipient=uid_recipient)
+                delete_trade_request.delete()
+                return Response({"Deleted request succesfully!"}, status=status.HTTP_200_OK)
+            except TradeRequest.DoesNotExist:
+                return Response({"error": "No Trades found does not exist"}, status=status.HTTP_404_NOT_FOUND)
