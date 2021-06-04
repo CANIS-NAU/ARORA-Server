@@ -180,6 +180,7 @@ class UserInteractionsEndPointByReceiverAndNotifType(APIView):
     def get(self, request, receiver_user_id):
         try:
 			#Reduce to notifications [user and global(id = 7)]
+            #I have no idea what this does, might want to delete it. (Joe V, 6/3/2021)
             queryset = UserInteraction.objects.filter(Q(receiver_user_id=receiver_user_id)
                                                      |Q(receiver_user_id=receiver_user_id)
                                                      &Q(user_interaction_type_id = 1))
@@ -492,14 +493,14 @@ class SuperflyInviteEndpoint(APIView):
     
 class TradeRequestEndPoint(APIView):
 
-    def get(self, request, user_id):
+    def get(self, request, uid_recipient):
         try:
-            trades_qs = TradeRequest.objects.filter(user_interaction_id=user_interaction_id)
+            trades_qs = TradeRequest.objects.filter(uid_recipient=uid_recipient)
             print(list(trades_qs))
             serializer = TradeRequestSerializer(trades_qs, many=True)
             return Response(serializer.data)
         except TradeRequest.DoesNotExist:
-            return Response({"error": "UserInteraction does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "No Trades found does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
         serializer = TradeRequestSerializer(data=request.data)
