@@ -3,7 +3,7 @@ from UserInfos.models import UserInfo
 from Quests.models import QuestReport
 # Create your models here.
 
-
+#Not used currently
 class ButterflyType(models.Model):
     butterfly_type_id = models.AutoField(primary_key=True, default=1, db_column='ButterflyTypeId')  # Primary Key
     butterfly_type_description = models.IntegerField(db_column='ButterflyTypeDescription')
@@ -12,7 +12,7 @@ class ButterflyType(models.Model):
     def __int__(self):
         return self.butterfly_type_id
 
-
+#Not used currently
 class Butterfly(models.Model):
     butterfly_id = models.AutoField(primary_key=True, db_column='ButterflyId')  # Primary Key
 
@@ -24,6 +24,7 @@ class Butterfly(models.Model):
     def __int__(self):
         return self.butterfly_id
 
+#This model represents a recipe to create a superfly. Every superflysession has one of these recipes. 
 class Superfly(models.Model):
     superfly_id = models.AutoField(primary_key=True, db_column='SuperflyId') # Primary Key
     #Unique name for this SuperFly inputted by the user.
@@ -38,7 +39,9 @@ class Superfly(models.Model):
     b3_count = models.IntegerField(db_column='B3Count', default = 1) 
     b4_count = models.IntegerField(db_column='B4Count', default = 1)
 
-
+#This is the butterfly that is displayed on the profile page. Most likely will be replaced by
+#UserSuperfly as the superflies will then be able to be displayed on the profile page 
+#and as the user's icon. 
 class UserButterfly(models.Model):
     user_butterfly_id = models.AutoField(primary_key=True, db_column='UserButterflyId')  # Primary Key
 
@@ -53,7 +56,7 @@ class UserButterfly(models.Model):
     def __int__(self):
         return self.user_butterfly_id
 
-
+#Not used yet, could be useful for a social application. 
 class ButterflyLike(models.Model):
     butterfly_like_id = models.AutoField(primary_key=True, db_column='ButterflyLikeId')  # Primary Key
 
@@ -72,7 +75,7 @@ class ButterflyLike(models.Model):
     def __int__(self):
         return self.butterfly_like_id
 
-
+#See above, not used yet. 
 class ButterflyComment(models.Model):
     butterfly_comment_id = models.AutoField(primary_key=True, db_column='ButterflyCommentId')  # Primary Key
 

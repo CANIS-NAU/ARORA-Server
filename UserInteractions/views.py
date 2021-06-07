@@ -474,9 +474,11 @@ class SuperflySessionEndpoint(APIView):
             #Case when participant_0 starts the session.
             elif(first_key.startswith("session_started")):
                 self.assign_butterflies(updated_session)
+
             #Case to update the progress of the superfly
             elif(first_key.startswith("current")):
                 self.handle_progress(updated_session)
+                
             #Return the updated session back.
             return Response(serializer.data,
                             status=status.HTTP_200_OK)
@@ -495,6 +497,17 @@ class SuperflySessionEndpoint(APIView):
                             status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+class SuperflyInviteEndpointDeleteSession(APIView):
+    def delete(self, request, session_id):
+        try:
+            delete_invites = SuperflyInvite.objects.filter(session=session_id)
+            delete_invites.delete()
+            return Response({"Deleted invites succesfully!"}, status=status.HTTP_200_OK)
+        except TradeRequest.DoesNotExist:
+            return Response({"error": "No Invites found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+
 class SuperflyInviteEndpoint(APIView):
     #Used to get all invites for the inputted userid. 
     def get(self, request, uid_recipient):
@@ -508,12 +521,12 @@ class SuperflyInviteEndpoint(APIView):
             return Response({"error": "No invites present for this user"}, status=status.HTTP_404_NOT_FOUND)
 
      # TODO add delete
-    def delete(self, request, uid_recipient):
+    def delete(self, request, uid_sender):
             try:
-                delete_invites = SuperflyInvite.objects.filter(uid_recipient=uid_recipient)
+                delete_invites = SuperflyInvite.objects.filter(uid_sender=uid_sender)
                 delete_invites.delete()
                 return Response({"Deleted invites succesfully!"}, status=status.HTTP_200_OK)
-            except TradeRequest.DoesNotExist:
+            except SuperflyInvite.DoesNotExist:
                 return Response({"error": "No Invites found."}, status=status.HTTP_404_NOT_FOUND)
     
 class TradeRequestEndPoint(APIView):
