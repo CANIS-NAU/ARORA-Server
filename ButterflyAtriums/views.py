@@ -29,7 +29,7 @@ class UserSuperflyEndPoint(APIView):
             
             new_user_superfly.save()
             #Everything created succesfully, then send the new superfly/user pairing back.
-            return Response({"success: UserSuperfly pairing completed successfully."},
+            return Response(serializer.data,
                             status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 

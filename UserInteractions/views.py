@@ -242,7 +242,6 @@ class SuperflySessionEndpoint(APIView):
     
 
     def inviteParticipants(self, available_participants, new_session):
-        #Otherwise get
         num_available = len(available_participants)
         sampledParticipants = self.sampleParticipants(num_available, available_participants)
         print("Chosen participants: ", sampledParticipants)
@@ -310,8 +309,10 @@ class SuperflySessionEndpoint(APIView):
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
     #If we are patching a new user in, figure out which slot to put them in. 
+    #This function deletes the invite used to enter the recipient into the session.
     def verify_participants(self, current_session, new_participant_slot):
         new_participant = ""
+
         if new_participant_slot == "id_0":
             new_participant = UserInfo.objects.get(user_id=current_session.id_0)
             current_session.participant_0 = new_participant
@@ -322,7 +323,6 @@ class SuperflySessionEndpoint(APIView):
             self.delete_invite(current_session, current_session.participant_0)
             #Delete this user's session invites when they join a new session
             
-
         elif new_participant_slot == "id_1":
             new_participant = UserInfo.objects.get(user_id=current_session.id_1)
             current_session.participant_1 = new_participant
@@ -362,13 +362,16 @@ class SuperflySessionEndpoint(APIView):
         #Delete this user's session invites when they join a new session
         SuperflyInvite.objects.filter(uid_sender=new_participant.user_id).delete()
         current_session.save()
-        
+
+    #Deletes the invite object that the recipient used to join the session   
     def delete_invite(self, session, participant):
         testing = False
         if(not testing):
             SuperflyInvite.objects.filter(session=session, recipient=participant).delete()
 
-
+    # This method will either:
+    # 1. End the game if there are no more butterflies left to contribute.  
+    # 2. Assign new butterflies if the game is not over (there is still butterflies to contribute)
     def handle_progress(self, session):
         #If we completed the superfly, GAME IS OVER
         #Mark the game as over and save the session. 
@@ -381,7 +384,7 @@ class SuperflySessionEndpoint(APIView):
             print("Game is not over, assigning more butterflies.")
             self.assign_butterflies(session)
 
-    
+    # This builds the array of butterfly types needed used within the assign_butterflies method.
     def get_types_needed(self, needed_dict):
         butterfly_types_needed = []
         #While we still have room to sample
@@ -391,6 +394,7 @@ class SuperflySessionEndpoint(APIView):
         print(butterfly_types_needed)
         return butterfly_types_needed
 
+    #This will assign the butterfly to a slot in the session based on the participant_num
     def set_butterfly_assignment(self, session, participant_num, butterfly_type):
         if participant_num == 0:
             session.butterfly_participant_0 = butterfly_type
@@ -403,17 +407,14 @@ class SuperflySessionEndpoint(APIView):
         elif participant_num == 4:
             session.butterfly_participant_4 = butterfly_type
         else:
-            print("Invalid participant number attempted butterfly assignment")   
-        
+            print("Invalid participant number attempted butterfly assignment")
+
+    #This will randomly assign butterflies based on the amount still needed to make the recipe.   
     def assign_butterflies(self, session):
         print("Assigning butterflies to Users in session")
         participant_count = session.session_participant_count
         print(participant_count)
         print(session.superfly_recipe)
-        
-        assigned_butterflies = [session.butterfly_participant_0, 
-            session.butterfly_participant_1, session.butterfly_participant_2, 
-            session.butterfly_participant_3, session.butterfly_participant_4]
 
         butterflies_needed_dict = {0: (session.superfly_recipe.b0_count - session.current_b0_count), 
         1: (session.superfly_recipe.b1_count - session.current_b1_count), 
@@ -442,9 +443,7 @@ class SuperflySessionEndpoint(APIView):
             updated_entry = {selected_butterfly: number_needed}
             butterflies_needed_dict.update(updated_entry)
             print("Types left to select", butterfly_types_needed)
-
-        print("Participant 0 assigned: ", session.butterfly_participant_0)
-        print("Participant 1 assigned: ", session.butterfly_participant_1)
+        #After we assign all butterflies, save the session object. 
         session.save()
 
     def patch(self, request, session_id):
@@ -497,6 +496,7 @@ class SuperflySessionEndpoint(APIView):
                             status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+# Allows us to delete all invites tied to a session object based on the passed in session_id
 class SuperflyInviteEndpointDeleteSession(APIView):
     def delete(self, request, session_id):
         try:
@@ -506,8 +506,18 @@ class SuperflyInviteEndpointDeleteSession(APIView):
         except TradeRequest.DoesNotExist:
             return Response({"error": "No Invites found."}, status=status.HTTP_404_NOT_FOUND)
 
+# Allows us to delete all invites tied to a session object based on the passed in sender_id
+class SuperflyInviteEndpointDeleteSender(APIView):
+    def delete(self, request, uid_sender):
+        try:
+            delete_invites = SuperflyInvite.objects.filter(uid_sender=uid_sender)
+            delete_invites.delete()
+            return Response({"Deleted invites succesfully!"}, status=status.HTTP_200_OK)
+        except TradeRequest.DoesNotExist:
+            return Response({"error": "No Invites found."}, status=status.HTTP_404_NOT_FOUND)
 
 
+# All other methods for superflyinvite, additional DELETE here for deleting by recipient_id
 class SuperflyInviteEndpoint(APIView):
     #Used to get all invites for the inputted userid. 
     def get(self, request, uid_recipient):
@@ -520,17 +530,17 @@ class SuperflyInviteEndpoint(APIView):
         except SuperflyInvite.DoesNotExist:
             return Response({"error": "No invites present for this user"}, status=status.HTTP_404_NOT_FOUND)
 
-     # TODO add delete
-    def delete(self, request, uid_sender):
+    #This should be passed the uid of the sender instead of recipient, as we will only want to delete all invites
+    #SENT by a user. 
+    def delete(self, request, uid_recipient):
             try:
-                delete_invites = SuperflyInvite.objects.filter(uid_sender=uid_sender)
+                delete_invites = SuperflyInvite.objects.filter(uid_recipient=uid_recipient)
                 delete_invites.delete()
                 return Response({"Deleted invites succesfully!"}, status=status.HTTP_200_OK)
             except SuperflyInvite.DoesNotExist:
                 return Response({"error": "No Invites found."}, status=status.HTTP_404_NOT_FOUND)
     
 class TradeRequestEndPoint(APIView):
-
     def get(self, request, uid_recipient):
         try:
             trades_qs = TradeRequest.objects.filter(uid_recipient=uid_recipient)
@@ -569,10 +579,19 @@ class TradeRequestEndPoint(APIView):
                             status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)"""
 
-    # TODO add delete
     def delete(self, request, uid_recipient):
             try:
                 delete_trade_request = TradeRequest.objects.filter(uid_recipient=uid_recipient)
+                delete_trade_request.delete()
+                return Response({"Deleted request succesfully!"}, status=status.HTTP_200_OK)
+            except TradeRequest.DoesNotExist:
+                return Response({"error": "No Trades found does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class TradeRequestEndPointDeleteByRequestId(APIView):
+    def delete(self, request, request_id):
+            try:
+                delete_trade_request = TradeRequest.objects.filter(request_id=request_id)
                 delete_trade_request.delete()
                 return Response({"Deleted request succesfully!"}, status=status.HTTP_200_OK)
             except TradeRequest.DoesNotExist:

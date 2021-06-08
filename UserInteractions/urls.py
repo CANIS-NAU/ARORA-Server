@@ -24,12 +24,14 @@ urlpatterns = [
 
     #Paths to manage invites. 
     path('superflyinvite', views.SuperflyInviteEndpoint.as_view()),
-    path('superflyinvite/<int:uid_sender>', views.SuperflyInviteEndpoint.as_view()),
+    path('superflyinvite/<int:uid_recipient>', views.SuperflyInviteEndpoint.as_view()),
     path('superflyinvitebysession/<int:session_id>', views.SuperflyInviteEndpointDeleteSession.as_view()),
+    path('superflyinvitebysender/<int:uid_sender>', views.SuperflyInviteEndpointDeleteSender.as_view()),
 
     #Paths to manage superfly trading requests
     path('traderequest', views.TradeRequestEndPoint.as_view()),
     path('traderequest/<int:uid_recipient>', views.TradeRequestEndPoint.as_view()),
+    path('traderequestdeleteid/<int:request_id>', views.TradeRequestEndPointDeleteByRequestId.as_view())
 
 
 
