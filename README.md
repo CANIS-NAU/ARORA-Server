@@ -408,8 +408,9 @@ Sharing Link: <a href="https://www.getpostman.com/collections/921a12a8fa5a925e0c
 <img src="https://lh3.googleusercontent.com/ZQteAq437kU8-0D2uc4Ly5_K5mAXoB6XqzuXNcEZ9hjKXb8jXDEhOm7g95zwrnc9K378t14AEts" alt="enter image description here"></p>
 </li>
 </ol>
-<h1 id="foreign-key-relationship-map">Foreign Key Relationship Map</h1>
-<p><img src="https://lh3.googleusercontent.com/HHVpXfdrQpsn6Dni90zc--UU-BtoxjyRfuMlX4MvEHtv-bCBolApN5uc_gxfPFSLa8LLqRauwsI" alt="Relationship img"><br>
+<h1 id="foreign-key-relationship-map">Entity Relationship (ER) Diagram</h1>
+  <img src = "https://github.com/CANIS-NAU/ARORA-Server/blob/master/ERDiagram.png">
+  
 <strong>Note:</strong><br>
 All validation part depends on this foreign key relationship map.<br>
 Example:<br>
@@ -439,14 +440,6 @@ Data in JSON: { “token”:“JWT &lt; token_to_be_refresh &gt;”}</p>
 Method: POST<br>
 Data in JSON: { “token”:“JWT &lt; token_to_be_refresh &gt;”}<br>
 Note: ‘<a href="http://getblimp.github.io/django-rest-framework-jwt/#additional-settings">JWT_ALLOW_REFRESH</a>’ should be True to enable <a href="http://getblimp.github.io/django-rest-framework-jwt/#refresh-token">refreshing token</a>.</p>
-</blockquote>
-<h1 id="contact">Contact</h1>
-<p>If you have any question about the above content, be free to contact me.</p>
-<blockquote>
-<p>Developer: Jinming Yang<br>
-Email: <a href="mailto:jy345@nau.edu">jy345@nau.edu</a><br>
-Github: @LooDaHu<br>
-WeChat: a651120561</p>
 </blockquote>
 <p>And here is a simple tutorial to fast set-up about <a href="https://github.com/LooDaHu/ARORA_General_Introduction/blob/master/README.md">Django-REST-framework and Retrofit</a>.</p>
 

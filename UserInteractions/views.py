@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from .models import *
 from UserInfos.models import UserInfo
 from Notifications.models import Notification
+from Butterflies.models import *
 from .serializers import *
 
 
@@ -196,4 +197,34 @@ class UserInteractionsEndPointByQuestReportId(APIView):
         except UserInteraction.DoesNotExist:
             return Response({"error": "This QuestReport does not have any associated UserInteractions"}, status=status.HTTP_404_NOT_FOUND)
         
-# TODO: Multiuser interaction where there is one initiator to many receivers (up to 6)
+# TODO: SuperFly session object to be created (POST), viewed (GET), and added to (PATCH)
+class SuperflySessionEndpoint(APIView):
+    
+
+    def get(self, request, session_id):
+        try:
+            #Possible refactor to eliminate explicitly define primary keys, as Django can autopopluate them for us. 
+            session = SuperflySession.objects.get(session_id=session_id)
+            serializer = SuperflySessionSerializer(queryset)
+            return Response(serializer.data)
+        except SuperflySession.DoesNotExist:
+            return Response({"error": "UserInteractionType does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request):
+        serializer = SuperflySessionSerializer(data=request.data)
+        if serializer.is_valid():
+            new_session = serializer.save()
+         #   print("Session superfly: %d", new_session.superfly_recipe.superfly_id)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, new_participant):
+        #Test
+        print("Hello world")
+    
+
+    def patch(self, request, new_count):
+        #Test
+        print("Updating current counts")
+
+    
