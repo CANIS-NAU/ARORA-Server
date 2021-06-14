@@ -25,7 +25,7 @@ SECRET_KEY = 'k-^(18sjx0trbgu*zh%75i64!1*8^0v2m(8a*gdwobzia%#2h1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.aroraserver.com', 'aroraserver.com', '104.248.178.78', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['.aroraserver.com', 'aroraserver.com', '104.248.178.78']
 
 # Application definition
 

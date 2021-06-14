@@ -21,12 +21,6 @@ class UserInfo(AbstractUser):
     user_b2_count = models.IntegerField(default=0, db_column="UserB2Count")    
     user_b3_count = models.IntegerField(default=0, db_column="UserB3Count")    
     user_b4_count = models.IntegerField(default=0, db_column="UserB4Count")    
-    user_b5_count = models.IntegerField(default=0, db_column="UserB5Count")    
-#    user_b6_count = models.IntegerField(default=0, db_column="UserB6Count")    
-#    user_b7_count = models.IntegerField(default=0, db_column="UserB7Count")    
-#    user_b8_count = models.IntegerField(default=0, db_column="UserB8Count")    
-#    user_b9_count = models.IntegerField(default=0, db_column="UserB9Count")    
-#    user_b10_count = models.IntegerField(default=0, db_column="UserB10Count")
 
     user_current_location_lat = models.DecimalField(max_digits=5, decimal_places=2, default=0.0,
                                                     db_column='UserCurrentLocationLat')

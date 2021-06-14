@@ -22,7 +22,6 @@ class UserInfoSerializer(serializers.ModelSerializer):
             'user_b2_count',
             'user_b3_count',
             'user_b4_count',
-            'user_b5_count',
             'user_current_location_lat',
             'user_current_location_long',
             'user_current_location_updated',
