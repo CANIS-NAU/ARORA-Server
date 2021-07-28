@@ -13,7 +13,7 @@
 <ol>
 <li>
   <p>Connect to the arora development server via ssh. Follow command line prompts to create/enter a password:<br>
-    <blockquote>ssh [NAUID]@104.248.178.78</blockquote></p>
+    <blockquote>ssh [id]@[ip_address]</blockquote></p>
 </li>
 <li>
 <p>Clone this server repository to your root folder on the arora server using: <br>
@@ -40,7 +40,7 @@
 <ol>
  <li>
   <p>Connect to the arora development server via ssh. Follow command line prompts to enter your created password: <br> 
-    <blockquote>ssh [NAUID]@104.248.178.78</blockquote></p>
+    <blockquote>ssh [id]@[ip_address]</blockquote></p>
 </li>
 <li>
 <p>From the root directory, activate your virtual environment using: <br>
@@ -71,10 +71,10 @@
 <li>
 <p>Run the server: <br>
   <blockquote>python3 manage.py runserver [IP_ADDR]:[PORT]</blockquote>
-  <blockquote>python3 manage.py runserver 104.248.178.78:8000</blockquote></p>
+  <blockquote>python3 manage.py runserver [server_ip_address]:8000</blockquote></p>
 </li>
 <li>
-<p>The server will now be up and running. Open your browser and go to 104.248.178.78:8000/admin to access admin site.<br>
+<p>The server will now be up and running. Open your browser and go to [server_ip_address]:8000/admin to access admin site.<br>
 </p>
 </li>
 <li>
