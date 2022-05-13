@@ -61,7 +61,7 @@
   <blockquote>python3 manage.py migrate</blockquote></p>
 </li>
 <li>
-<p>If the above command caused an error, it was likely due to tables not syncing. Run this instead: <br>
+<p>Next, run this: <br>
   <blockquote>python3 manage.py migrate --run-syncdb</blockquote></p>
 </li>
 <li>
