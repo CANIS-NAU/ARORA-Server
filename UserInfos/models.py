@@ -8,13 +8,13 @@ class UserInfo(AbstractUser):
     user_info_id = models.AutoField(primary_key=True, db_column='UserInfoId')  # PK
     #Date since most recent mood report POST.
     user_current_mood_updated = models.DateTimeField(default=datetime(1979, 12, 31, 0, 0, 0, 000000, tzinfo=utc),
-                                                     db_column='UserCurrentMoodUpdated')
+                                                       db_column='UserCurrentMoodUpdated')
     #user_created_at = models.DateTimeField(auto_now_add=True, editable=False, db_column='UserCreatedAt')
-    #user_catching_date = models.DateTimeField(default=datetime(1979, 12, 31, 0, 0, 0, 000000, tzinfo=utc), db_column='UserCatchingDate')
+    #user_catching_date = models.DateTimeField(default=datetime(1979, 12, 31, 0, 0, 0, 000000, tzinfo=utc), db_column='UserCatchingDate')    
     
     user_current_mood = models.IntegerField(default=0, db_column='UserCurrentMood')
     user_id = models.IntegerField(default=2147483648, unique=False, editable=False, db_column='UserId')
-    
+    user_type = models.TextField(default='youth' , db_column='userType')  
     #Butterfly Counts, an inventory of butterflies caught in M4 for the current user. Composite attribute 
     #These counts are used to display in the atrium and create superflies in the superfly multiplayer game. 
     user_b0_count = models.IntegerField(default=0, db_column="UserB0Count") # Red

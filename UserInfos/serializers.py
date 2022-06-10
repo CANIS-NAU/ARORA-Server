@@ -11,6 +11,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
         fields = (
             'user_info_id',
             'user_current_mood_updated',
+	    'user_type',
             'user_current_mood',
             'user_id',
             'user_name',
