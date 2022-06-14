@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'SystemReports',
     'UserInteractions',
     'Notifications',
-    'UserInfos'
+    'UserInfos',
+    'MentorChat'
 ]
 
 MIDDLEWARE = [
