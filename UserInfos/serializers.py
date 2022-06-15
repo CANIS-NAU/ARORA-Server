@@ -13,6 +13,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
             'user_current_mood_updated',
 	    'user_type',
             'user_current_mood',
+	    'user_current_stress',
             'user_id',
             'user_name',
             'user_b0_count',

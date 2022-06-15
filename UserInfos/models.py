@@ -11,7 +11,7 @@ class UserInfo(AbstractUser):
                                                        db_column='UserCurrentMoodUpdated')
     #user_created_at = models.DateTimeField(auto_now_add=True, editable=False, db_column='UserCreatedAt')
     #user_catching_date = models.DateTimeField(default=datetime(1979, 12, 31, 0, 0, 0, 000000, tzinfo=utc), db_column='UserCatchingDate')    
-    
+    user_current_stress = models.IntegerField(default=0, db_column='UserCurrentStress')
     user_current_mood = models.IntegerField(default=0, db_column='UserCurrentMood')
     user_id = models.IntegerField(default=2147483648, unique=False, editable=False, db_column='UserId')
     user_type = models.TextField(default='youth' , db_column='userType')  
