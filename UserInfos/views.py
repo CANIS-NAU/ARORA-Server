@@ -12,7 +12,7 @@ from Butterflies.models import UserButterfly
 from .serializers import UserInfoSerializer, UserSerializer
 
 from django.db.utils import IntegrityError
-
+import math
 
 class UserInfoList(generics.GenericAPIView):
     queryset = UserInfo.objects.all()
@@ -65,7 +65,13 @@ class UserInfos(APIView):
             return Response({"error": "Wrong Json Format"}, status=status.HTTP_409_CONFLICT)
         try:
             new_user = UserInfo.objects.create_user(username=username, email=email, password=password)
-            new_user.user_id = hash( username )
+            #hash the username and force positive ( theres a destrepency between very large integers and the db )
+            hashed_val = math.floor( hash( username ) / 1000 )
+
+            if hashed_val < 0:
+              new_user.user_id = ( hashed_val * -1 )
+            else:
+              new_user.user_id = hashed_val
             new_user.save()
             return Response({"user_id": new_user.user_id}, status=status.HTTP_200_OK)
         except IntegrityError:
