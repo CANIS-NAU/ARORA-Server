@@ -33,7 +33,7 @@ class MoodReportEndPoint(APIView):
             return Response({"error": "Mood_report does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
-        serializer = MoodReportSerializer(data=request.data)
+        serializer = MoodReportSerializer(data=request.data) 
         if serializer.is_valid():
             new_mood_report = serializer.save()
             return Response({"mood_report_id": new_mood_report.mood_report_id},

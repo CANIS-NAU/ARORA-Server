@@ -5,8 +5,10 @@ from datetime import datetime
 
 class Message(models.Model):
 	message_id = models.AutoField(primary_key=True, db_column='messageId')
+	convo_id = models.IntegerField(default=0, db_column='convoId')
 	message_text = models.TextField(default="", db_column='messageText')
 	message_date = models.DateTimeField(default=datetime(1979, 12, 31, 0, 0,  0, 000000, tzinfo=utc), db_column='messageTime')
 	message_sender_id = models.IntegerField(default=2, db_column='senderId')
+	message_reciver_id = models.IntegerField( default=1, db_column='reciverId')
 	sender_name = models.TextField(default='default-sender', db_column='senderName')
 
