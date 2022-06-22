@@ -45,11 +45,10 @@ class MessageEndPoints( APIView ):
          convo_id = ( hashed_id * -1 )
       else:
          convo_id = hashed_id
-      new_message_convo = Message.objects.create(messageText=message_text,
-                                                 messageTime=message_date, senderId=message_sender_id,
-                                                 senderName=sender_name, reciverId=reciver_id,
-                                                 convoId=convo_id)
-      new_message.save()
+      new_message_convo = Message.objects.create( convo_id=convo_id, message_text=message_text,
+                                                 message_date=message_date, message_sender_id=message_sender_id,
+                                                 message_reciver_id=reciver_id, sender_name=sender_name )
+      new_message_convo.save()
       return Response({"Convo Id": new_message_convo.convo_id}, status=status.HTTP_200_OK )
 
     def delete( self, request, message_id):
