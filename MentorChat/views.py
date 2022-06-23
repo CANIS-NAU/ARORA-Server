@@ -8,7 +8,7 @@ from rest_condition import Or
 from .models import Message
 from .serializers import MessageSerializers
 from django.db.utils import IntegrityError
-import math
+import hashlib
 
 class MessageList( generics.GenericAPIView ):
     queryset = Message.objects.all()
@@ -40,11 +40,18 @@ class MessageEndPoints( APIView ):
       except KeyError:
           return Response({"error": "Wrong Json Format"}, status=status.HTTP_400_BAD_REQUEST)
 
-      hashed_id = math.floor( hash( sender_name + str( reciver_id ) ) / 1000)
-      if hashed_id < 0:
-         convo_id = ( hashed_id * -1 )
-      else:
-         convo_id = hashed_id
+      hash_id1 = hashlib.md5( str( message_sender_id ).encode() + str( reciver_id ).encode() ).hexdigest()
+      hash_id2 = hashlib.md5( str( reciver_id ).encode() + str( message_sender_id ).encode() ).hexdigest()
+      try:
+         query = Message.objects.get( convo_id=hash_id1 )
+         convo_id = hash_id1
+      except Message.DoesNotExist:
+             try:
+                query = Message.objects.get( convo_id=hash_id2 )
+                convo_id = hash_id2
+             except Message.DoesNotExist:
+                convo_id = hash_id1
+
       new_message_convo = Message.objects.create( convo_id=convo_id, message_text=message_text,
                                                  message_date=message_date, message_sender_id=message_sender_id,
                                                  message_reciver_id=reciver_id, sender_name=sender_name )
