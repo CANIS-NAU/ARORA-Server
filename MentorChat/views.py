@@ -35,7 +35,7 @@ class MessageEndPoints( APIView ):
          message_date = request.data['message_date']
          message_sender_id = request.data['message_sender_id']
          sender_name = request.data['sender_name']
-         reciver_id = request.data['reciver_id']
+         reciver_id = request.data['message_reciver_id']
 
       except KeyError:
           return Response({"error": "Wrong Json Format"}, status=status.HTTP_400_BAD_REQUEST)
