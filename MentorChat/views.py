@@ -43,11 +43,11 @@ class MessageEndPoints( APIView ):
       hash_id1 = hashlib.md5( str( message_sender_id ).encode() + str( reciver_id ).encode() ).hexdigest()
       hash_id2 = hashlib.md5( str( reciver_id ).encode() + str( message_sender_id ).encode() ).hexdigest()
       try:
-         query = Message.objects.get( convo_id=hash_id1 )
+         query = Message.objects.filter( convo_id=hash_id1 )
          convo_id = hash_id1
       except Message.DoesNotExist:
              try:
-                query = Message.objects.get( convo_id=hash_id2 )
+                query = Message.objects.filter( convo_id=hash_id2 )
                 convo_id = hash_id2
              except Message.DoesNotExist:
                 convo_id = hash_id1
@@ -72,6 +72,7 @@ class MessageEndPoints( APIView ):
 
 class MessagesEndPoints( APIView ):
 	def get( self, request, convo_id ):
+		convo_id = str( convo_id )
 		try:
 			queryset = Message.objects.filter( convo_id=convo_id )
 			serializer = MessageSerializers( queryset, many=True )
