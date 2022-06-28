@@ -65,16 +65,19 @@ class UserInfos(APIView):
             return Response({"error": "Wrong Json Format"}, status=status.HTTP_409_CONFLICT)
         try:
             new_user = UserInfo.objects.create_user(username=username, email=email, password=password)
-            
+
             #make hashed a managable integer
+            '''
             hashed_val = math.floor( hash( username ) / 1000 )
-            
+
             #force positive integer
             if hashed_val < 0:
               new_user.user_id = ( hashed_val * -1 )
             else:
               new_user.user_id = hashed_val
-            #save new hashed user info 
+            #save new hashed user info
+            '''
+            new_user.user_id = new_user.user_info_id
             new_user.save()
             return Response({"user_id": new_user.user_id}, status=status.HTTP_200_OK)
         except IntegrityError:
