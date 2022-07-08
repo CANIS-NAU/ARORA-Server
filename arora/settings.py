@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'UserInteractions',
     'Notifications',
     'UserInfos',
-    'MentorChat'
+    'MentorChat',
+    'AccessCodes'
 ]
 
 MIDDLEWARE = [

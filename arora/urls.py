@@ -32,5 +32,6 @@ urlpatterns = [
     path('', include('Quests.urls')),
     path('', include('LocationReports.urls')),
     path('', include('SystemReports.urls')),
-    path('', include('MentorChat.urls'))
+    path('', include('MentorChat.urls')),
+    path('', include('AccessCodes.urls'))
 ]
