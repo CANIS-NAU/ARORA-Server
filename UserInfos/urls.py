@@ -15,6 +15,7 @@ urlpatterns = [
     path('userinfos', views.AllUserInfos.as_view()),
     path('nearbyusers/<int:user_id>', views.NearByUser.as_view()),
     path('unassignedmentees' , views.UnassignedMenteeList.as_view()),
+    path('assignedmentees/<int:mentor_id>' , views.MentorAssignedList.as_view()),
     url('api-token-auth', obtain_jwt_token),
     url('api-token-refresh', refresh_jwt_token),
     url('api-token-verify', verify_jwt_token)

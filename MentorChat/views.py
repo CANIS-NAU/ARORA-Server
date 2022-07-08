@@ -4,10 +4,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_condition import Or
-
 from .models import Message
 from .serializers import MessageSerializers
 from django.db.utils import IntegrityError
+from django.db.models import Q
 import hashlib
 
 class MessageList( generics.GenericAPIView ):
@@ -18,6 +18,15 @@ class MessageList( generics.GenericAPIView ):
 class MessageDetail( generics.RetrieveUpdateDestroyAPIView ):
     queryset = Message.objects.all()
     serializer_class = MessageSerializers
+
+class MentorChats( APIView ):
+	def get( self , request , mentor_id ):
+		try:
+			query = Message.objects.filter(Q( message_sender_id=mentor_id) | Q( message_reciver_id=mentor_id ) )
+			serializer = MessageSerializers( query, many=True )
+			return Response( serializer.data )
+		except Message.DoesNotExist:
+			return Response( {"error": "Messsages with this mentor id does not exist"} , status=status.HTTP_404_NOT_FOUND )
 
 class MessageEndPoints( APIView ):
     def get( self , request , message_id ):

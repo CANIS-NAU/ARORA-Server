@@ -48,6 +48,11 @@ class UnassignedMenteeList( APIView ):
 		serializer = UserInfoSerializer( query, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
+class MentorAssignedList( APIView ):
+	def get( self, request, mentor_id ):
+		query = UserInfo.objects.filter(mentor_id=mentor_id)
+		serializer = UserInfoSerializer( query, many=True )
+		return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserInfos(APIView):
     # Uncomment to enable PERMISSION RESTRICTION
