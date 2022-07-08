@@ -27,9 +27,12 @@ class AccessCodeEndpoints( APIView ):
 	def post( self , request ):
 		try:
 			access_code = request.data['access_code']
+			creator_id = request.data['creator_id']
+			created_at = request.data['created_at']
 		except KeyError:
 			return Response({"error": "Wrong Json Format"}, status=status.HTTP_400_BAD_REQUEST)
-		new_access_code = AccessCodes.objects.create(access_code=access_code)
+		new_access_code = AccessCodes.objects.create(access_code=access_code, creator_id=creator_id ,
+							 created_at=created_at)
 		return Response({"Access Code": new_access_code.access_code}, status=status.HTTP_200_OK )
 	def delete( self, request, access_code ):
 		try:

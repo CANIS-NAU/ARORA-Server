@@ -29,7 +29,6 @@ class UserList(generics.ListAPIView):
     queryset = UserInfo.objects.all()
     serializer_class = UserSerializer
 
-
 # Open Post request in UserInfo endpoint for all to register
 class IsPostRequest(BasePermission):
     def has_permission(self, request, view):
@@ -42,6 +41,12 @@ class AllUserInfos(APIView):
         queryset = UserInfo.objects.all()
         serializer = UserInfoSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UnassignedMenteeList( APIView ):
+	def get( self, request ):
+		query = UserInfo.objects.filter(mentor_id=2147483648) #NOTE: This value will most likely change to whatever the supervisor id is
+		serializer = UserInfoSerializer( query, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserInfos(APIView):
