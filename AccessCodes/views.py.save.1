@@ -15,15 +15,6 @@ class AllAccessCodes(APIView):
         serializer = AccessCodesSerializers(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class AllSupervisorGeneratedCodes( APIView ):
-	def get( self , request , user_id ):
-		try:
-			query = AccessCodes.objects.filter( creator_id=user_id )
-			serializer = AccessCodesSerializers( query , many=True)
-			return Response( serializer.data, status=status.HTTP_200_OK)
-		except AccessCodes.DoesNotExist:
-			return Response({"error":"No access codes created by provided user"} , status=status.HTTP_404_NOT_FOUND)
-
 class AccessCodeEndpoints( APIView ):
 	def get( self , request , access_code ):
 		try:
@@ -35,21 +26,12 @@ class AccessCodeEndpoints( APIView ):
 
 	def post( self , request ):
 		try:
-                        access_code = request.data['access_code']
-                        creator_id = request.data['creator_id']
-                        created_at = request.data['created_at']
-                        expired_at = request.data['expired_at']
-                        authority_level = request.data['authority_level']
-                        queryset = AccessCodes.objects.all()
-                        serializer = AccessCodesSerializers(queryset, many=True)
-                        for code in serializer.data:
-                          if code['access_code'] == access_code:
-                            return Response({"error": "That access code already exists"}, status=status.HTTP_400_BAD_REQUEST)
+			access_code = request.data['access_code']
+			creator
+			created_at = request.data['created_at']
 		except KeyError:
 			return Response({"error": "Wrong Json Format"}, status=status.HTTP_400_BAD_REQUEST)
-		new_access_code = AccessCodes.objects.create(access_code=access_code, creator_id=creator_id ,
-							 created_at=created_at , expired_at=expired_at, authority_level=authority_level)
-		new_access_code.save()
+		new_access_code = AccessCodes.objects.create(access_code=access_code)
 		return Response({"Access Code": new_access_code.access_code}, status=status.HTTP_200_OK )
 	def delete( self, request, access_code ):
 		try:

@@ -19,6 +19,23 @@ class MessageDetail( generics.RetrieveUpdateDestroyAPIView ):
     queryset = Message.objects.all()
     serializer_class = MessageSerializers
 
+class MessagesBetweenUsers( APIView ):
+	def get( self , request , sender_id , receiver_id ):
+		try:
+			query = Message.objects.filter( Q( message_sender_id=sender_id) | Q(message_reciver_id=receiver_id) or
+							Q( message_sender_id=receiver_id) | Q(message_reciver_id=sender_id ))
+			serializer = MessageSerializers( query, many=True )
+			new_message_array = []
+			for message in serializer.data:
+				if message['message_sender_id'] == sender_id and message['message_reciver_id'] == receiver_id:
+					new_message_array.append( message )
+				elif message['message_sender_id'] == receiver_id and message['message_reciver_id'] == sender_id:
+					new_message_array.append( message )
+			return Response( new_message_array )
+		except Message.DoesNotExist:
+			return Response( {"error": "Messsages with these sender and reciever do not exist"} , status=status.HTTP_404_NOT_FOUND )
+
+
 class MentorChats( APIView ):
 	def get( self , request , mentor_id ):
 		try:

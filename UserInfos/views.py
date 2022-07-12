@@ -43,16 +43,31 @@ class AllUserInfos(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UnassignedMenteeList( APIView ):
-	def get( self, request ):
-		query = UserInfo.objects.filter(mentor_id=2147483648) #NOTE: This value will most likely change to whatever the supervisor id is
-		serializer = UserInfoSerializer( query, many=True)
-		return Response(serializer.data, status=status.HTTP_200_OK)
+	def get( self, request , user_id ):
+			query = UserInfo.objects.filter(mentor_id=2147483648) #NOTE: This value will most likely change to whatever the supervisor id is
+			supervisors = UserInfo.objects.filter(user_type="supervison")
+			serializer = UserInfoSerializer( query, many=True)
+			return Response(serializer.data, status=status.HTTP_200_OK)
+
+			#return Response({"error": "User not a supervisor"}, status=status.HTTP_400_BAD_REQUEST)
 
 class MentorAssignedList( APIView ):
 	def get( self, request, mentor_id ):
 		query = UserInfo.objects.filter(mentor_id=mentor_id)
 		serializer = UserInfoSerializer( query, many=True )
 		return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ChangeAssignedMentor( APIView ):
+	def patch( self , request , user_id ):
+		try:
+			update_user = UserInfos.objects.get( user_id=user_id )
+		except UserInfos.DoesNotExist:
+			 return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
+		serializer = UserInfoSerializer(updated_user, data=request.data, partial=True)
+		if serializer.is_valid():
+			updated_user = serializer.save()
+			return Response({"user_id": updated_user.user_id}, status=status.HTTP_200_OK)
+		return Response({"error": "Wrong Json Format"}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserInfos(APIView):
     # Uncomment to enable PERMISSION RESTRICTION
