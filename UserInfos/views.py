@@ -44,29 +44,36 @@ class AllUserInfos(APIView):
 
 class UnassignedMenteeList( APIView ):
 	def get( self, request , user_id ):
-			query = UserInfo.objects.filter(mentor_id=2147483648) #NOTE: This value will most likely change to whatever the supervisor id is
-			supervisors = UserInfo.objects.filter(user_type="supervison")
+		try:
+			supervisor = UserInfo.objects.get(user_id=user_id)
+			supervisor_serializer = UserInfoSerializer( supervisor )
+			if supervisor_serializer.data['user_type'] != 'supervisor':
+				return Response({"error": "User not a supervisor"}, status=status.HTTP_400_BAD_REQUEST)
+			query = UserInfo.objects.filter(mentor_id=user_id)
 			serializer = UserInfoSerializer( query, many=True)
 			return Response(serializer.data, status=status.HTTP_200_OK)
-
-			#return Response({"error": "User not a supervisor"}, status=status.HTTP_400_BAD_REQUEST)
+		except UserInfo.DoesNotExist:
+			return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 class MentorAssignedList( APIView ):
 	def get( self, request, mentor_id ):
-		query = UserInfo.objects.filter(mentor_id=mentor_id)
-		serializer = UserInfoSerializer( query, many=True )
-		return Response(serializer.data, status=status.HTTP_200_OK)
+		try:
+			query = UserInfo.objects.filter(mentor_id=mentor_id)
+			serializer = UserInfoSerializer( query, many=True )
+			return Response(serializer.data, status=status.HTTP_200_OK)
+		except UserInfo.DoesNotExist:
+			return Response({"error": "Mentor id invalid"}, status=status.HTTP_404_NOT_FOUND)
 
 class ChangeAssignedMentor( APIView ):
 	def patch( self , request , user_id ):
 		try:
-			update_user = UserInfos.objects.get( user_id=user_id )
-		except UserInfos.DoesNotExist:
+			update_user = UserInfo.objects.get( user_id=user_id )
+		except UserInfo.DoesNotExist:
 			 return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
-		serializer = UserInfoSerializer(updated_user, data=request.data, partial=True)
+		serializer = UserInfoSerializer(update_user, data=request.data, partial=True)
 		if serializer.is_valid():
-			updated_user = serializer.save()
-			return Response({"user_id": updated_user.user_id}, status=status.HTTP_200_OK)
+			update_user = serializer.save()
+			return Response({"user_id": update_user.user_id}, status=status.HTTP_200_OK)
 		return Response({"error": "Wrong Json Format"}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserInfos(APIView):
