@@ -22,7 +22,7 @@ class MessageDetail( generics.RetrieveUpdateDestroyAPIView ):
 class MessagesBetweenUsers( APIView ):
 	def get( self , request , sender_id , receiver_id ):
 		try:
-			query = Message.objects.filter( Q( message_sender_id=sender_id) | Q(message_reciver_id=receiver_id) or
+			query = Message.objects.filter( Q( message_sender_id=sender_id) | Q(message_reciver_id=receiver_id) |
 							Q( message_sender_id=receiver_id) | Q(message_reciver_id=sender_id ))
 			serializer = MessageSerializers( query, many=True )
 			new_message_array = []

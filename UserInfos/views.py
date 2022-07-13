@@ -42,6 +42,12 @@ class AllUserInfos(APIView):
         serializer = UserInfoSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class Supervisor( APIView ):
+	def get( self , request ):
+		query = UserInfo.objects.get(user_type='supervisor')
+		serializer = UserInfoSerializer( query )
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
 class UnassignedMenteeList( APIView ):
 	def get( self, request , user_id ):
 		try:
