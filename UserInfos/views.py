@@ -42,25 +42,30 @@ class AllUserInfos(APIView):
         serializer = UserInfoSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+#Get the app supervisor( only allows for 1 )
 class Supervisor( APIView ):
 	def get( self , request ):
 		query = UserInfo.objects.get(user_type='supervisor')
-		serializer = UserInfoSerializer( query )
+		serializer = UserInfoSerializer( query ) #pass many=true if multiple supervisors
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
+#get a list of unassigned mentees
 class UnassignedMenteeList( APIView ):
 	def get( self, request , user_id ):
 		try:
+			#Make sure the user Id correspondes to the supervisor
 			supervisor = UserInfo.objects.get(user_id=user_id)
 			supervisor_serializer = UserInfoSerializer( supervisor )
 			if supervisor_serializer.data['user_type'] != 'supervisor':
 				return Response({"error": "User not a supervisor"}, status=status.HTTP_400_BAD_REQUEST)
+			#if unassigned then mentee has mentor id of supervisor. Return that list
 			query = UserInfo.objects.filter(mentor_id=user_id)
 			serializer = UserInfoSerializer( query, many=True)
 			return Response(serializer.data, status=status.HTTP_200_OK)
 		except UserInfo.DoesNotExist:
 			return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
+#Get all mentors assigned mentees
 class MentorAssignedList( APIView ):
 	def get( self, request, mentor_id ):
 		try:
@@ -70,6 +75,7 @@ class MentorAssignedList( APIView ):
 		except UserInfo.DoesNotExist:
 			return Response({"error": "Mentor id invalid"}, status=status.HTTP_404_NOT_FOUND)
 
+#Change a mentees mentor
 class ChangeAssignedMentor( APIView ):
 	def patch( self , request , user_id ):
 		try:

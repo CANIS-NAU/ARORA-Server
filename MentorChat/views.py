@@ -19,26 +19,32 @@ class MessageDetail( generics.RetrieveUpdateDestroyAPIView ):
     queryset = Message.objects.all()
     serializer_class = MessageSerializers
 
+#Get all messages between a sender and reveiver
 class MessagesBetweenUsers( APIView ):
 	def get( self , request , sender_id , receiver_id ):
 		try:
+			#query for all messages where sender and receiver are either sender or receiver
 			query = Message.objects.filter( Q( message_sender_id=sender_id) | Q(message_reciver_id=receiver_id) |
 							Q( message_sender_id=receiver_id) | Q(message_reciver_id=sender_id ))
 			serializer = MessageSerializers( query, many=True )
+			#We need to create a new list here because the query wont give back the exact messages we need
 			new_message_array = []
+			# loop through given messages and check for needed fields and append to the new list
 			for message in serializer.data:
 				if message['message_sender_id'] == sender_id and message['message_reciver_id'] == receiver_id:
 					new_message_array.append( message )
 				elif message['message_sender_id'] == receiver_id and message['message_reciver_id'] == sender_id:
 					new_message_array.append( message )
+			#Return list of messages between two users
 			return Response( new_message_array )
 		except Message.DoesNotExist:
 			return Response( {"error": "Messsages with these sender and reciever do not exist"} , status=status.HTTP_404_NOT_FOUND )
 
-
+#Get all messages the mentor has sent
 class MentorChats( APIView ):
 	def get( self , request , mentor_id ):
 		try:
+			#Query for mentor id is either the sender or receiver
 			query = Message.objects.filter(Q( message_sender_id=mentor_id) | Q( message_reciver_id=mentor_id ) )
 			serializer = MessageSerializers( query, many=True )
 			return Response( serializer.data )
@@ -47,14 +53,14 @@ class MentorChats( APIView ):
 
 class MessageEndPoints( APIView ):
     def get( self , request , message_id ):
-        # Get the query string from db and throw back data that was obtained
         try:
+            #query for message with corresponding id and throw back the message data
             query = Message.objects.get( message_id=message_id )
-            serializer = MessageSerializers( query ) #Might need to pass parameter many=true
+            serializer = MessageSerializers( query )
             return Response( serializer.data )
         except Message.DoesNotExist:
             return Response( {"error": "Messsage with this id does not exist"} , status=status.HTTP_404_NOT_FOUND )
-
+    #create a message object given the data
     def post( self , request ):
       try:
          message_text = request.data['message_text']
@@ -65,9 +71,10 @@ class MessageEndPoints( APIView ):
 
       except KeyError:
           return Response({"error": "Wrong Json Format"}, status=status.HTTP_400_BAD_REQUEST)
-
+      #Generate a hashed message convo id using a md5 hash function
       hash_id1 = hashlib.md5( str( message_sender_id ).encode() + str( reciver_id ).encode() ).hexdigest()
       hash_id2 = hashlib.md5( str( reciver_id ).encode() + str( message_sender_id ).encode() ).hexdigest()
+      #Check for convo id in use. Assign the one not in use and create message object. If neither in use,  defaults to hash_id1
       try:
          query = Message.objects.filter( convo_id=hash_id1 )
          convo_id = hash_id1
@@ -84,18 +91,16 @@ class MessageEndPoints( APIView ):
       new_message_convo.save()
       return Response({"Convo Id": new_message_convo.convo_id}, status=status.HTTP_200_OK )
 
+    #delete a message based on the message id passed
     def delete( self, request, message_id):
         try:
-            # Obtain the message with the given id
             delete_message_id = Message.objects.get( message_id=message_id )
-            # Delete and return sucess
             delete_message_id.delete()
             return Response({"Message Successfully Deleted"}, status=status.HTTP_200_OK)
         except Message.DoesNotExist:
-            # Return unsuccessful
             return Response( {"error": "Message with that id does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-
+#Get all messages with the given convo id
 class MessagesEndPoints( APIView ):
 	def get( self, request, convo_id ):
 		convo_id = str( convo_id )
