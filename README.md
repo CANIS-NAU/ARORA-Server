@@ -108,6 +108,9 @@
 |–&gt; user_name_of_strength* <em>(string)</em><br>
 |–&gt; user_created_at <em>(datetime)</em><br>
 |–&gt; user_current_mood* <em>(integer)</em>	<br>
+|-&gt; user_current_stress <em>(integer)</em><br>
+|-&gt; user_type<em> (string)</em><br>
+|-&gt; mentor_id<em>(integer)</em><br>
 |–&gt; user_current_mood_updated* <em>(datetime)</em><br>
 |–&gt; user_current_location_lat* <em>(decimal)</em><br>
 |–&gt; user_current_location_long* <em>(decimal)</em><br>
@@ -118,6 +121,16 @@
 <strong>|–&gt; username</strong> (Django bulit-in field) <em>(string)</em><br>
 <strong>|–&gt; email</strong> (Django bulit-in field) <em>(string)</em><br>
 <strong>|–&gt; password</strong> (Django bulit-in field) <em>(string)</em></p>
+</li>
+<li>
+<p>
+  AccessCodes<br>
+  |–&gt; access_code<em>(string)</em><br>
+  |–&gt; creator_id<em>(integer)</em><br>
+  |–&gt; created_at<em>(datetime)</em><br>
+  |–&gt; expired_at<em>(datetime)</em><br>
+  |–&gt; authority_level<em>(string)</em><br>
+</p>
 </li>
 <li>
 <p>ButterflyType<br>
@@ -167,6 +180,18 @@
 |–&gt; location_report_long* <em>(decimal)</em>  location_report_create_at<br>
 |–&gt; location_report_create_at <em>(datetime)</em><br>
 |–&gt; user_id* <em>(integer)</em></p>
+</li>
+<li>
+  <p>
+    MentorChat<br>
+    |–&gt; message_id<em>(auto)</em><br>
+    |–&gt; convo_id<em>(string)</em><br>
+    |–&gt; message_text<em>(string)</em><br>
+    |–&gt; message_date<em>(datetime)</em><br>
+    |–&gt; message_sender_id<em>(integer)</em><br>
+    |–&gt; message_reciver_id<em>(integer)</em><br>
+    |–&gt; sender_name<em>(string)</em><br>
+  </p>
 </li>
 <li>
 <p>MoodType<br>
