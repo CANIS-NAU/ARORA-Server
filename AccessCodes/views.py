@@ -6,6 +6,9 @@ from rest_condition import Or
 
 from .models import AccessCodes
 from .serializers import AccessCodesSerializers
+from UserInfos.models import UserInfo
+from UserInfos.serializers import UserInfoSerializer
+
 from django.db.utils import IntegrityError
 
 # Get all access codes in db
@@ -19,11 +22,13 @@ class AllAccessCodes(APIView):
 class AllSupervisorGeneratedCodes( APIView ):
 	def get( self , request , user_id ):
 		try:
+			userQuery = UserInfo.objects.get( user_id=user_id )
+			userSerializer = UserInfoSerializer( userQuery )
 			query = AccessCodes.objects.filter( creator_id=user_id )
 			serializer = AccessCodesSerializers( query , many=True)
 			return Response( serializer.data, status=status.HTTP_200_OK)
-		except AccessCodes.DoesNotExist:
-			return Response({"error":"No access codes created by provided user"} , status=status.HTTP_404_NOT_FOUND)
+		except UserInfo.DoesNotExist:
+			return Response({"error":"User does not exist"} , status=status.HTTP_404_NOT_FOUND)
 
 class AccessCodeEndpoints( APIView ):
 	#get a given access code information based on specific access code

@@ -4,8 +4,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_condition import Or
+
 from .models import Message
 from .serializers import MessageSerializers
+from UserInfos.models import UserInfo
+from UserInfos.serializers import UserInfoSerializer
+
 from django.db.utils import IntegrityError
 from django.db.models import Q
 import hashlib
@@ -23,6 +27,8 @@ class MessageDetail( generics.RetrieveUpdateDestroyAPIView ):
 class MessagesBetweenUsers( APIView ):
 	def get( self , request , sender_id , receiver_id ):
 		try:
+			user1Query = UserInfo.objects.get( user_id=sender_id )
+			user2Query = UserInfo.objects.get( user_id=receiver_id )
 			#query for all messages where sender and receiver are either sender or receiver
 			query = Message.objects.filter( Q( message_sender_id=sender_id) | Q(message_reciver_id=receiver_id) |
 							Q( message_sender_id=receiver_id) | Q(message_reciver_id=sender_id ))
@@ -37,20 +43,24 @@ class MessagesBetweenUsers( APIView ):
 					new_message_array.append( message )
 			#Return list of messages between two users
 			return Response( new_message_array )
-		except Message.DoesNotExist:
-			return Response( {"error": "Messsages with these sender and reciever do not exist"} , status=status.HTTP_404_NOT_FOUND )
+		except UserInfo.DoesNotExist:
+			return Response( {"error": "One of the users does not exist"} , status=status.HTTP_404_NOT_FOUND )
 
 #Get all messages the mentor has sent
 class MentorChats( APIView ):
 	def get( self , request , mentor_id ):
 		try:
-			#Query for mentor id is either the sender or receiver
-			query = Message.objects.filter(Q( message_sender_id=mentor_id) | Q( message_reciver_id=mentor_id ) )
-			serializer = MessageSerializers( query, many=True )
-			return Response( serializer.data )
-		except Message.DoesNotExist:
-			return Response( {"error": "Messsages with this mentor id does not exist"} , status=status.HTTP_404_NOT_FOUND )
-
+			userQuery = UserInfo.objects.get( user_id=mentor_id )
+			userSerializer = UserInfoSerializer( userQuery )
+			try:
+				#Query for mentor id is either the sender or receiver
+				query = Message.objects.filter(Q( message_sender_id=mentor_id) | Q( message_reciver_id=mentor_id ) )
+				serializer = MessageSerializers( query, many=True )
+				return Response( serializer.data )
+			except Message.DoesNotExist:
+				return Response( {"error": "Messsages with this mentor id does not exist"} , status=status.HTTP_404_NOT_FOUND )
+		except UserInfo.DoesNotExist:
+			return Response( {"error": "Messsages with this mentor id does not exist"}, status=status.HTTP_404_NOT_FOUND )
 class MessageEndPoints( APIView ):
     def get( self , request , message_id ):
         try:
@@ -103,10 +113,9 @@ class MessageEndPoints( APIView ):
 #Get all messages with the given convo id
 class MessagesEndPoints( APIView ):
 	def get( self, request, convo_id ):
-		convo_id = str( convo_id )
 		try:
 			queryset = Message.objects.filter( convo_id=convo_id )
 			serializer = MessageSerializers( queryset, many=True )
 			return Response( serializer.data )
 		except Message.DoesNotExist:
-			return Response({"error" : "All messages do not exist"}, status=status.HTTP_404_NOT_FOUND)
+			return Response({"error" : "Messages do not exist with that convo id"}, status=status.HTTP_404_NOT_FOUND)

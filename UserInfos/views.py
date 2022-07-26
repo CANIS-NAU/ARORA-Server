@@ -69,6 +69,8 @@ class UnassignedMenteeList( APIView ):
 class MentorAssignedList( APIView ):
 	def get( self, request, mentor_id ):
 		try:
+			checkUser = UserInfo.objects.get( user_id=mentor_id )
+			checkUserSerializer = UserInfoSerializer( checkUser)
 			query = UserInfo.objects.filter(mentor_id=mentor_id)
 			serializer = UserInfoSerializer( query, many=True )
 			return Response(serializer.data, status=status.HTTP_200_OK)
