@@ -322,6 +322,11 @@ e.g: <a href="http://127.0.0.1:8000/userbutterfly/1">http://127.0.0.1:8000/userb
 <td>GET</td>
 </tr>
 <tr>
+  <td>Access Codes</td>
+  <td>AccessCodes</td>
+  <td>GET; POST; DELETE</td>
+</tr>
+<tr>
 <td>ButterflyType</td>
 <td>butterflytype</td>
 <td>POST; GET; PUT; PATCH</td>
@@ -355,6 +360,11 @@ e.g: <a href="http://127.0.0.1:8000/userbutterfly/1">http://127.0.0.1:8000/userb
 <td>LocationReport</td>
 <td>locationreport</td>
 <td>POST; GET; PUT; PATCH</td>
+</tr>
+<tr>
+  <td>MentorChat</td>
+  <td>messages</td>
+  <td>POST; GET; DELETE</td>
 </tr>
 <tr>
 <td>MoodType</td>
