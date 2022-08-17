@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_condition import Or
 
 from .models import AccessCodes
@@ -13,6 +14,7 @@ from django.db.utils import IntegrityError
 
 # Get all access codes in db
 class AllAccessCodes(APIView):
+    permission_classes = [ AllowAny ]
     def get(self, request):
         queryset = AccessCodes.objects.all()
         serializer = AccessCodesSerializers(queryset, many=True)

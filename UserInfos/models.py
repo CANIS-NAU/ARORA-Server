@@ -23,7 +23,8 @@ class UserInfo(AbstractUser):
     user_b2_count = models.IntegerField(default=0, db_column="UserB2Count") # Orange   
     user_b3_count = models.IntegerField(default=0, db_column="UserB3Count") # Green    
     user_b4_count = models.IntegerField(default=0, db_column="UserB4Count") # Blue   
-    
+    firstname = models.TextField(default='', db_column="firstname")
+    lastname = models.TextField(default='', db_column="lastname")
     #user_current_location_lat = models.DecimalField(max_digits=5, decimal_places=2, default=0.0,
      #                                               db_column='UserCurrentLocationLat')
     #user_current_location_long = models.DecimalField(max_digits=5, decimal_places=2, default=0.0,

@@ -13,6 +13,7 @@ urlpatterns = [
     path('userinfo/<int:user_id>', views.UserInfos.as_view()),
     path('userinfo', views.UserInfos.as_view()),
     path('userinfos', views.AllUserInfos.as_view()),
+    path('createuser', views.CreateUser.as_view()),
     path('nearbyusers/<int:user_id>', views.NearByUser.as_view()),
     path('unassignedmentees/<int:user_id>' , views.UnassignedMenteeList.as_view()),
     path('assignedmentees/<int:mentor_id>' , views.MentorAssignedList.as_view()),

@@ -1,3 +1,4 @@
+
 """
 Django settings for arora project.
 
@@ -52,7 +53,8 @@ INSTALLED_APPS = [
     'Notifications',
     'UserInfos',
     'MentorChat',
-    'AccessCodes'
+    'AccessCodes',
+    'MentorFlagging'
 ]
 
 MIDDLEWARE = [
@@ -125,19 +127,16 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=360000),
     'JWT_RESPONSE_PAYLOAD_HANDLER':
         'UserInfos.utils.jwt_response_payload_handler',
-    # 'JWT_AUTH_HEADER_PREFIX': 'JWT',
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     'JWT_ALLOW_REFRESH': True,
 }
 
 # Rest framework authorization settings
 REST_FRAMEWORK = {
     #  Uncomment here to enable PERMISSION RESTRICTION
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.AllowAny',
-    ),
+       'rest_framework.permissions.IsAuthenticated',
+     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',

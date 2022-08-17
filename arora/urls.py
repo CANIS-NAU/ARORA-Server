@@ -33,5 +33,6 @@ urlpatterns = [
     path('', include('LocationReports.urls')),
     path('', include('SystemReports.urls')),
     path('', include('MentorChat.urls')),
-    path('', include('AccessCodes.urls'))
+    path('', include('AccessCodes.urls')),
+    path('', include('MentorFlagging.urls')),
 ]
