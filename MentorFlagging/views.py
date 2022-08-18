@@ -54,3 +54,13 @@ class FlaggingEndpoints( APIView ):
 		new_flag.save()
 		return Response({"Flag created successfully"}, status=status.HTTP_200_OK )
 
+	def patch( self, request, id ):
+		try:
+			flag = Flagging.objects.get( id=id )
+		except Flagging.DoesNotExist:
+			return Response({"error": "Flag with that id does not exist"}, status=status.HTTP_404_NOT_FOUND)
+		serializer = FlaggingSerializer( flag, data=request.data, partial=True )
+		if serializer.is_valid():
+			flag = serializer.save()
+			return Response({"successful"}, status=status.HTTP_200_OK)
+		return Response({"error": "Wrong Json Format"}, status=status.HTTP_404_BAD_REQUEST)
